@@ -1,5 +1,7 @@
 # PES 6 Online
 
+[![CI](https://github.com/Broettogodinho/pes6-online/actions/workflows/ci.yml/badge.svg)](https://github.com/Broettogodinho/pes6-online/actions/workflows/ci.yml)
+
 Modo **Copa Online** e **Liga Online** dentro do Pro Evolution Soccer 6 (PC), com servidor de torneio próprio.
 
 - **Fase 1 (atual):** PC — patch em DLL sobre o `pes6.exe` + servidor baseado no Sixserver.

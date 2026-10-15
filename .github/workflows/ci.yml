@@ -10,8 +10,8 @@ jobs:
     name: Auditoria (sem arquivos do jogo)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: python tools/audit_game_files.py
@@ -24,8 +24,8 @@ jobs:
       run:
         working-directory: server
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
       - run: pip install -e ".[dev]"
@@ -36,10 +36,10 @@ jobs:
     runs-on: windows-latest
     needs: audit
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - run: cmake -S patch -B build/patch -A Win32
       - run: cmake --build build/patch --config Release
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         with:
           name: pes6online-dll
           path: build/patch/Release/pes6online.dll
