@@ -1,6 +1,6 @@
 # ADR-001 — Base do jogo: PES 6 PC, navegador na Fase 2
 
-- **Status:** proposto (aguardando aprovação do Bruno) — SCRUM-15
+- **Status:** aprovado por Bruno em 2026-10-15 — SCRUM-15
 - **Data:** 2026-10-15
 
 ## Contexto
