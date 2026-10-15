@@ -1,0 +1,69 @@
+# ===========================================================
+# ARQUIVOS DO JOGO — NUNCA VERSIONAR (ver README, aviso legal)
+# ===========================================================
+*.exe
+*.afs
+*.img
+*.bin
+*.dat
+*.iso
+*.mdf
+*.mds
+*.cue
+# option files e saves do PES 6
+KONAMI-WIN32PES6OPT*
+*.opt
+save/
+# DLLs originais do jogo (as nossas saem só de build/)
+*.dll
+!patch/third_party/**/*.dll
+# projetos do Ghidra/IDA contêm o binário do jogo
+*.gpr
+*.rep/
+*.idb
+*.i64
+*.id0
+*.id1
+*.id2
+*.nam
+*.til
+# pastas de trabalho locais com material do jogo
+game/
+extracted/
+dumps/
+
+# ===========================================================
+# Build e ambiente
+# ===========================================================
+build/
+out/
+.vs/
+*.obj
+*.pdb
+*.ilk
+*.lib
+*.exp
+CMakeUserPresets.json
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+*.egg-info/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+dist/
+
+# Editor / SO
+.vscode/*
+!.vscode/extensions.json
+.DS_Store
+Thumbs.db
+
+# Segredos
+.env
+*.pem

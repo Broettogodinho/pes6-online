@@ -1,0 +1,16 @@
+# Versão-alvo do pes6.exe. Todos os endereços em re/ valem SÓ para este hash.
+# Preenchido na F5 (SCRUM-24), a partir da cópia própria do Bruno.
+
+[target]
+name = "pes6.exe"
+version = ""        # ex.: "1.10"
+sha256 = ""         # sha256 do pes6.exe-alvo
+image_base = ""     # ex.: "0x00400000"
+
+# Exemplo de entrada (formato), sem dados reais:
+# [[function]]
+# name = "Cup_AdvanceRound"
+# address = "0x00000000"
+# signature = "55 8B EC ?? ??"   # padrão de bytes curto, ?? = curinga
+# status = "INFERIDO"            # INFERIDO | CONFIRMADO
+# notes = "re/notes/Cup_AdvanceRound.md"
