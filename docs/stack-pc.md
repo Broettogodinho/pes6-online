@@ -49,13 +49,34 @@ Legenda: **CONFIRMADO** = fonte primária ou teste · **A VERIFICAR** = plausív
 - Execução **local no navegador** (WebAssembly + WebGPU) como alvo, em vez de streaming de vídeo.
 - Carregamento **sob demanda** de assets, com cache local, para o jogo abrir rápido.
 
+### Referência: port de GTA V no navegador (playgta5.com, out/2026) — checagem
+
+| Afirmação | Resultado |
+|---|---|
+| Execução local no navegador, sem cloud gaming | **CONFIRMADO** (várias fontes) |
+| Motor C++ compilado para WebAssembly (`game.wasm`) | **CONFIRMADO**: ~63 MB, ~91 mil funções, nomes do motor RAGE, compilado com Emscripten |
+| Partiu do código-fonte do jogo | **CONFIRMADO** que partiu de C/C++ do jogo; uma fonte diz que era código **vazado** |
+| Renderização em WebGPU | **CONFIRMADO**: comandos Direct3D 11 traduzidos para WebGPU e ~6.600 shaders para WGSL |
+| Canvas transferido para um Worker | **PARCIAL**: confirmado o uso de vários Web Workers; transferência do canvas não citada |
+| Núcleo inicial de ~700 MB | **CONFIRMADO**: ~582 MB de conjunto inicial, ~743 MB até o mundo aparecer |
+| Streaming sob demanda | **CONFIRMADO**: ~20,9 GB em 5.814 arquivos no servidor do site, pedidos em trechos por HTTP Range, cache em OPFS |
+| Uso de IA na conversão | **NÃO CONFIRMADO**: só uma fonte afirma |
+| "Análise do código vazado no GitHub" | **NÃO CONFIRMADO**: as análises foram feitas sobre o `game.wasm` publicado |
+| Desfecho | Saiu do ar horas depois de viralizar; uma fonte atribui a uma notificação da Take-Two, sem confirmação oficial |
+
+Fontes: SecurityLab (análise do `game.wasm`), Ubergizmo, Lowyat, Games.gg, ProPakistani, GodIsAGeek.
+
+**Conclusão:** o padrão técnico (motor em WASM + tradução gráfica para WebGPU + leitura em trechos com cache OPFS) é real e é o alvo da Fase 2. As duas diferenças abaixo continuam valendo.
+
 ### O que muda em relação à pesquisa original
 
-**1. Não temos código-fonte.** O port de GTA V citado foi, segundo as análises publicadas, compilado a partir do **código C++ do jogo**, possivelmente vazado. No PES 6 não existe fonte: "recompilar para WASM" significa **recompilação estática do binário x86** (técnica dos projetos N64Recomp/PS2Recomp/PSPRecomp), muito mais difícil que compilar C++. A tradução de Direct3D 9 para WebGPU também precisa ser construída.
+**1. Não temos código-fonte.** O GTA V web foi compilado de C/C++ com Emscripten. No PES 6 não existe fonte: o caminho equivalente é **recompilação estática do binário x86 para C** (técnica dos projetos N64Recomp/PS2Recomp/PSPRecomp) e só então Emscripten → WASM. A tradução gráfica também muda: **Direct3D 9 → WebGPU** (no GTA V era Direct3D 11).
 
-**2. Assets não podem ficar numa CDN nossa.** Hospedar os `.afs` (e GDB com conteúdo de terceiros) para download é **distribuir o jogo**. O port de GTA V servia os arquivos do jogo a partir do próprio site e saiu do ar horas depois de viralizar; já houve DMCA da Take-Two contra um port de Vice City no navegador. O desenho da Fase 2 fica:
-- o jogador **seleciona a própria instalação** do PES 6;
-- os arquivos ficam num **cache local do navegador** (OPFS/IndexedDB), lidos sob demanda por um I/O Worker;
+**2. Os bytes do jogo vêm da cópia do jogador, não de um servidor nosso.** Mantemos o mesmo mecanismo de streaming (leitura em trechos + cache OPFS), trocando a origem:
+- o jogador **seleciona a própria instalação** do PES 6 (File System Access API ou upload local);
+- um I/O Worker lê **trechos sob demanda** desses arquivos locais e guarda no **OPFS**;
 - a CDN entrega **só o que é nosso**: motor recompilado, patch, portal.
+
+Vantagem extra: o PES 6 tem ~1,5 GB de assets (contra ~20 GB do GTA V), então ler direto do disco do jogador é rápido e dispensa servidor de arquivos.
 
 **3. A estratégia final continua sendo decidida por PoC** (SCRUM-36 → ADR-002), comparando recompilação estática x86→WASM com emulação x86 em WASM, e mantendo streaming apenas como último recurso.
