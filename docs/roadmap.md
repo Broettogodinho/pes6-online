@@ -13,10 +13,10 @@ Princípio: **nenhuma ideia é descartada.** Cada etapa tem um plano B que volta
 | # | Etapa | Épico | Filas | Entrega |
 |---|---|---|---|---|
 | 1 | Engenharia reversa e mods (paralela) | SCRUM-8 | F3–F4 | Sistema de entrada mapeado, DLL de mods, mod de mais controles |
-| 1 | Sofá virtual com Parsec (paralela) | SCRUM-9 / SCRUM-10 | F2–F4 | Copa nativa com 8 humanos via Parsec; ADR-003 |
+| 1 | Sofá virtual com Parsec (paralela) | SCRUM-7 | F2–F4 | Copa nativa com 8 humanos via Parsec; ADR-003 |
 | 2 | Torneio local por mod | SCRUM-59 | F5 (26/11 → 24/12) | Item "Torneio" no menu, Copa criada por código, jogado via Parsec |
 | 3 | Netplay | SCRUM-11 / SCRUM-12 | F6–F9 (24/12 → 29/04/2027) | Cada jogador com a própria cópia; só os controles trafegam |
-| 4 | Torneio online nativo | SCRUM-58 | Após F9 | Item "Torneio Online", participantes da sala, servidor como autoridade |
+| 4 | Torneio online nativo | SCRUM-58 (+ guardados: SCRUM-9 servidor, SCRUM-10 patch) | Após F9 | Item "Torneio Online", participantes da sala, servidor como autoridade |
 
 ## Planos B (voltar ao básico)
 
