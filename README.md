@@ -8,6 +8,7 @@ Modo **Copa Online** e **Liga Online** dentro do Pro Evolution Soccer 6 (PC), co
 - **Fase 2:** levar o PES 6 Online ao navegador (estratégia definida por PoC).
 
 Backlog e planejamento: Jira, projeto **PES 6 Online** (chave `SCRUM`).
+Documentação navegável: [Confluence · PES 6 Online](https://admdasantas.atlassian.net/wiki/spaces/PES6/overview) (espelho; a fonte da verdade é `docs/` neste repositório).
 
 ## ⚠️ Aviso legal
 
