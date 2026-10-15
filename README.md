@@ -6,7 +6,8 @@ A **Copa nativa** do Pro Evolution Soccer 6 (PC) jogada por amigos remotos como 
 
 - **Fase 1 (atual): sofá virtual.** Um anfitrião roda o `pes6.exe` 1.00 original com a **Copa nativa** e vários jogadores humanos; os amigos entram via Parsec, todos assistem e o controle passa para os 2 jogadores da vez ([ADR-002](docs/adr/ADR-002-sofa-virtual-parsec.md), [protocolo de testes](docs/poc-parsec.md)).
 - **Fase 2: netplay no navegador**, se a Fase 1 for aprovada: cada jogador roda o jogo no navegador e só os comandos dos controles trafegam.
-- Trabalhos suspensos até o netplay precisar deles: DLL de hooks (`patch/`), servidor de torneio (`server/`).
+- **Trilha paralela: engenharia reversa e mods** (`re/`, `patch/`). DLL proxy com hooks validados por assinatura, sem alterar arquivos do jogo em disco. Primeiro mod: suporte a mais controles na Copa.
+- **Visão de longo prazo: modo "Torneio Online" nativo** no menu do jogo, construído sobre o mapeamento de menus, Copa e save feito pela trilha de RE. O servidor de torneio (`server/`) é a base para isso.
 
 Backlog e planejamento: Jira, projeto **PES 6 Online** (chave `SCRUM`).
 Documentação navegável: [Confluence · PES 6 Online](https://admdasantas.atlassian.net/wiki/spaces/PES6/overview) (espelho; a fonte da verdade é `docs/` neste repositório).

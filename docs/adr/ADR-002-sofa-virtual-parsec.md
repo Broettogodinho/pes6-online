@@ -28,7 +28,9 @@ O plano anterior (DLL de hooks + servidor de torneio sincronizando várias cópi
 ## Consequências
 
 - A Copa nativa roda intacta: sorteio, tabela e regras são do próprio PES.
-- A engenharia reversa, a DLL de hooks e o servidor de torneio saem do caminho crítico e ficam **suspensos** até o netplay mostrar que precisa deles.
+- A engenharia reversa e a DLL de hooks saem do caminho crítico, mas **seguem ativas como trilha paralela de mods** (revisão de 2026-10-15, épico SCRUM-8): primeiro o mapeamento do sistema de entrada e o mod de mais controles, usado no teste T4.
+- Os mods usam DLL proxy (d3d9/dinput8) com hooks validados por endereço + assinatura; nenhum arquivo do jogo é alterado em disco.
+- O modo "Torneio Online" nativo no menu do jogo fica como **visão de longo prazo**, apoiado no mapeamento de menus, Copa e save (SCRUM-20 a 23) e no servidor de torneio já escrito.
 - O caminho crítico passa a ser: cópia do jogo → anfitrião → sessões de teste.
 - A engine de Copa em Python já escrita (SCRUM-28) fica disponível, mas não é usada na Fase 1.
 
