@@ -3,7 +3,7 @@
 
 [target]
 name = "pes6.exe"
-version = ""        # ex.: "1.10"
+version = "1.00"    # original, sem patches (decisão 2026-10-15)
 sha256 = ""         # sha256 do pes6.exe-alvo
 image_base = ""     # ex.: "0x00400000"
 

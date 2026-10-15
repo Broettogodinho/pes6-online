@@ -9,7 +9,7 @@ Legenda: **CONFIRMADO** = fonte primária ou teste · **A VERIFICAR** = plausív
 
 | Item | Situação |
 |---|---|
-| Versão-alvo | **A VERIFICAR.** A pesquisa indicou v1.00; a escolha entre 1.00 e 1.10 depende do que Kitserver 6 e Sixserver suportam e é decidida na SCRUM-24. |
+| Versão-alvo | **DECIDIDO (Bruno, 2026-10-15): v1.00 original, sem patches.** Base "zerada"; todas as nossas mudanças ficam na DLL e no servidor. Compatibilidade do Kitserver 6 e do Sixserver com a 1.00 é **A VERIFICAR** na SCRUM-24/25. |
 | Hash | **Será medido na cópia do Bruno** (SCRUM-24) e gravado em `re/symbols/target.toml`. |
 | Executável "decrypted / No-CD" | **Não adotado.** Ver regra abaixo. |
 
