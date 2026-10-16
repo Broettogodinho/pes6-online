@@ -34,6 +34,7 @@ add_library(pes6online SHARED
   src/log.cpp
   src/exe_check.cpp
   src/hooks.cpp
+  src/probes.cpp
   src/proxy_dinput8.cpp
   src/dinput8.def
 )

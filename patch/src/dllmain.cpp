@@ -11,26 +11,20 @@
 #include "exe_check.h"
 #include "hooks.h"
 #include "log.h"
+#include "probes.h"
 
 namespace {
-
-// Hooks ativos. Vazio até as funções-alvo serem mapeadas e assinadas (SCRUM-24);
-// cada entrada vem de re/symbols/target.toml.
-const pes6online::hooks::HookSpec kHooks[] = {
-    {"(nenhum)", 0, "", nullptr, nullptr},
-};
 
 DWORD WINAPI init_thread(LPVOID) {
   if (!pes6online::exe::is_target()) return 0;
   if (!pes6online::hooks::init()) return 0;
+  int count = 0;
+  const auto* specs = pes6online::probes::specs(&count);
   int installed = 0;
-  int declared = 0;
-  for (const auto& spec : kHooks) {
-    if (spec.address == 0) continue;
-    ++declared;
-    if (pes6online::hooks::install(spec)) ++installed;
+  for (int i = 0; i < count; ++i) {
+    if (pes6online::hooks::install(specs[i])) ++installed;
   }
-  pes6online::log::write(std::format("hooks: {} de {} instalados", installed, declared));
+  pes6online::log::write(std::format("hooks: {} de {} instalados", installed, count));
   return 0;
 }
 
@@ -40,7 +34,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_ATTACH) {
     DisableThreadLibraryCalls(module);
     pes6online::log::init();
-    pes6online::log::write("PES 6 Online: DLL carregada (v0.2.0, proxy dinput8)");
+    pes6online::log::write("PES 6 Online: DLL carregada (v0.3.0, proxy dinput8, sondas de RE)");
     if (HANDLE t = CreateThread(nullptr, 0, init_thread, nullptr, 0, nullptr)) CloseHandle(t);
   } else if (reason == DLL_PROCESS_DETACH && reserved == nullptr) {
     pes6online::hooks::shutdown();
