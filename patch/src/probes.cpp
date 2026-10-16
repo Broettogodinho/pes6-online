@@ -74,7 +74,38 @@ void __cdecl slot_set_detour(void* value, int slot) {
   g_slot_set_original(value, slot);
 }
 
+// ---------------------------------------------------------------------------
+// FUN_00666a20(id): troca a tela atual (cena[0] = id; cena em PTR_DAT_00bd7c7c).
+// O despachante FUN_0068d260 faz switch sobre a tela atual (cmp eax, 0x49:
+// 74 telas). Convenção: cdecl, 1 argumento (mov ecx,[esp+4]; ...; ret).
+// Ver re/notes/telas.md.
+using SceneSetFn = void(__cdecl*)(int id);
+SceneSetFn g_scene_set_original = nullptr;
+std::atomic<int> g_scene_set_calls{0};
+constexpr int kSceneSetLogLimit = 500;
+constexpr std::uintptr_t kScenePtr = 0x00BD7C7C;  // PTR_DAT_00bd7c7c
+
+int current_scene() {
+  const auto* obj = *reinterpret_cast<int* const*>(kScenePtr);
+  return obj == nullptr ? -1 : obj[0];
+}
+
+void __cdecl scene_set_detour(int id) {
+  const auto caller = reinterpret_cast<std::uintptr_t>(_ReturnAddress());
+  const int before = current_scene();
+  const int n = ++g_scene_set_calls;
+  if (n <= kSceneSetLogLimit) {
+    log::write(std::format("probe tela #{}: {} -> {} (0x{:02X}) ret=0x{:08X}", n, before, id, id, caller));
+  } else if (n == kSceneSetLogLimit + 1) {
+    log::write("probe tela: limite de log atingido");
+  }
+  g_scene_set_original(id);
+}
+
 const hooks::HookSpec kSpecs[] = {
+    {"FUN_00666a20 (sonda de telas)", 0x00666A20,
+     "A1 ?? ?? ?? ?? 85 C0 74 06 8B 4C 24 04 89 08 C3 A1 ?? ?? ?? ??",
+     reinterpret_cast<void*>(&scene_set_detour), reinterpret_cast<void**>(&g_scene_set_original)},
     {"FUN_00864ac0 (sonda)", 0x00864AC0,
      "8B 44 24 08 83 F8 16 0F 87 ?? ?? ?? ?? FF 24 85 ?? ?? ?? ??",
      reinterpret_cast<void*>(&slot_set_detour), reinterpret_cast<void**>(&g_slot_set_original)},
