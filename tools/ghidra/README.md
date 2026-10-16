@@ -28,3 +28,21 @@ $G = "C:\Tools\ghidra_12.1.4_PUBLIC\support\analyzeHeadless.bat"
 ```
 
 `-readOnly` evita salvar alterações no projeto; para gravar nomes de funções no projeto, rode sem ele.
+
+## Erros no VS Code
+
+A extensão Java do VS Code acusa `The import ghidra... cannot be resolved` porque não conhece as bibliotecas do Ghidra. O Ghidra fornece essas bibliotecas ao rodar o script, então os erros são só do editor. Para eliminá-los, adicione ao `.vscode/settings.json` local (não versionado):
+
+```json
+"java.project.sourcePaths": ["tools/ghidra"],
+"java.project.referencedLibraries": [
+  "C:/Tools/ghidra_12.1.4_PUBLIC/Ghidra/Framework/*/lib/*.jar",
+  "C:/Tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Base/lib/*.jar",
+  "C:/Tools/ghidra_12.1.4_PUBLIC/Ghidra/Features/Decompiler/lib/*.jar",
+  "C:/Tools/ghidra_12.1.4_PUBLIC/Ghidra/Processors/x86/lib/*.jar"
+]
+```
+
+## REA (servidor MCP)
+
+O `npx rea-agents setup` não registra no Claude Code quando ele roda só pela extensão do VS Code (sem o comando `claude` no terminal). O registro fica no `.mcp.json` da raiz do repositório (`rea-agents@6.5.0 --mcp`, com `GHIDRA_INSTALL_DIR` apontando para o Ghidra). Depois de recarregar a janela, o VS Code pede para aprovar o servidor.
