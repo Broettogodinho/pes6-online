@@ -18,7 +18,11 @@ FetchContent_Declare(minhook
   URL_HASH SHA256=1aebeae4ca898330c507860acc2fca2eb335fe446a3a2b8444c3bf8b2660a14e
   DOWNLOAD_EXTRACT_TIMESTAMP TRUE
 )
+# O CMakeLists do MinHook declara VERSION 3.0...3.5; o CMake 4 avisa que < 3.10
+# está obsoleto. Fixamos o mínimo de política só para a dependência.
+set(CMAKE_POLICY_VERSION_MINIMUM 3.10)
 FetchContent_MakeAvailable(minhook)
+unset(CMAKE_POLICY_VERSION_MINIMUM)
 
 # Núcleo sem dependência do Windows: assinaturas (testável fora do jogo).
 add_library(pes6online_core STATIC src/signature.cpp)
