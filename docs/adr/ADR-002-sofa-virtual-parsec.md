@@ -41,6 +41,7 @@ O plano anterior (DLL de hooks + servidor de torneio sincronizando várias cópi
 | Limite de convidados/controles do plano gratuito do Parsec | Confirmar na documentação atual (PoC-01); na Copa só 2 controles ativos por vez |
 | Upload do anfitrião (~10 Mbps por convidado) | Medir; reduzir resolução/FPS para espectadores; avaliar anfitrião em nuvem |
 | Quantos controles o PES 6 PC aceita na Copa | Mapear na PoC-02 |
+| Troca de slot de controle no meio da Copa (jogo não reconhecer o controle do novo convidado ou trocar a ordem) | Confirmar atribuição de slots no Parsec (PoC-01) e reconexão de controles no PES 6 (PoC-02) |
 | Atraso de entrada perceptível | Metas de latência no protocolo; cabo de rede; anfitrião central em relação aos jogadores |
 | Anfitrião cair no meio da Copa | Salvar a Copa nativa entre rodadas; testar retomada (T5) |
 | Uso de uma cópia por várias pessoas | Fase 1 restrita a grupo privado de amigos; na Fase 2 cada jogador usa a própria cópia |
