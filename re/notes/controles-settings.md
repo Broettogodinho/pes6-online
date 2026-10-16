@@ -32,6 +32,15 @@ Backup dos dois em `D:\RE\backup\pes6-config-<data>` (fora do repositório; são
 - **Resultado (2026-10-16, sessão 15:28):** o DirectInput listou **1 controle**: `Controller (XBOX 360 For Windows)`, produto `{10403537-…}` (VID 3537/PID 1040), instância `{8282EDC0-0923-11F1-8002-444553540000}`, a mesma gravada no `settings.dat`. Os dois controles Xbox Bluetooth não apareceram na enumeração. Nenhuma mudança registrada durante a sessão (checagem a cada 5 s).
 - **Pendente:** saber qual controle foi desconectado e por quanto tempo, e em qual controle o mapeamento se perde. Checagem passou para 1 s.
 
-## Correção pretendida (se a hipótese se confirmar)
+## Evidência no registro (2026-10-16)
 
-A DLL proxy apresenta cada controle ao jogo com um **GUID estável** (derivado do produto e da ordem), mapeando-o para o dispositivo real em `CreateDevice`. Assim o GUID salvo no `settings.dat` sempre volta a existir. Base do mod de controles (SCRUM-57).
+`HKCU\System\CurrentControlSet\Control\MediaProperties\PrivateProperties\DirectInput\VID_3537&PID_1040\Calibration` tem **3** GUIDs de instância para o mesmo modelo: `\0` `{8282C6B0-…-8001-…}`, `\1` `{8282EDC0-…-8002-…}` (o gravado no `settings.dat`) e `\2` `{828314D0-…-8003-…}`.
+- **CONFIRMADO** (leitura do registro): o Windows já deu GUIDs de instância diferentes ao mesmo controle.
+- **INFERIDO:** quando o controle volta como `…8001` ou `…8003`, o jogo não acha o `…8002` e perde o mapeamento.
+
+## Correção implementada (DLL v0.7.0, commit `f554dd8`)
+
+- `patch/src/guid_map.cpp` decide o GUID apresentado, sem depender do Windows, com testes em `tests/test_guid_map.cpp`. Um controle cujo GUID real não está salvo herda um GUID salvo **do mesmo modelo** (pelo histórico `Calibration\N`) que ainda não esteja em uso.
+- `patch/src/dinput_wrap.cpp` envolve o `IDirectInput8A/W` que o jogo cria: `EnumDevices` entrega o GUID decidido; `CreateDevice`, `GetDeviceStatus` e `FindDevice` traduzem de volta para o real. Cada substituição é registrada no log.
+- **Limite conhecido:** `IDirectInputDevice8::GetDeviceInfo` ainda devolve o GUID real. Se o jogo usar essa função para conferir o controle, será preciso envolver também o dispositivo.
+- **Teste pendente:** ligar o controle em outra porta USB (para forçar outro GUID) e conferir no jogo se o mapeamento se mantém, com o log mostrando "GUID real … apresentado como …".
