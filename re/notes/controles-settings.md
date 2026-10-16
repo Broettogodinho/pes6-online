@@ -44,3 +44,18 @@ Backup dos dois em `D:\RE\backup\pes6-config-<data>` (fora do repositório; são
 - `patch/src/dinput_wrap.cpp` envolve o `IDirectInput8A/W` que o jogo cria: `EnumDevices` entrega o GUID decidido; `CreateDevice`, `GetDeviceStatus` e `FindDevice` traduzem de volta para o real. Cada substituição é registrada no log.
 - **Limite conhecido:** `IDirectInputDevice8::GetDeviceInfo` ainda devolve o GUID real. Se o jogo usar essa função para conferir o controle, será preciso envolver também o dispositivo.
 - **Teste pendente:** ligar o controle em outra porta USB (para forçar outro GUID) e conferir no jogo se o mapeamento se mantém, com o log mostrando "GUID real … apresentado como …".
+
+## Teste no jogo da correção (2026-10-16)
+
+- **Achado:** o jogo só usa controles **cadastrados pelo `settings.exe`**. O controle Nintendo (057E/2009), não cadastrado, não aparecia para mapeamento (INFERIDO). O Bruno cadastrou o Xbox Bluetooth (045E/02E0) no `settings.exe`, que ficou no slot 2 do `settings.dat` (`{A7528520-74AE-11F0-8002-…}`). O registro mostra 2 GUIDs já dados a esse modelo (`A7528520`, `35CA4A70`).
+- **Resultado:** com a DLL v0.7.0, ao **desconectar o Xbox Bluetooth com o jogo aberto**, o mapeamento se perde.
+- **Hipótese (INFERIDO):** o jogo só enumera e abre os controles uma vez. Quando o dispositivo cai, ele não o reabre (a correção atua na enumeração, que não volta a acontecer). Prioridade secundária (Bruno): primeiro mapear como a leitura entra no jogo.
+
+## Tentativa 2: observar a leitura (DLL v0.8.0)
+
+`patch/src/dinput_device_wrap.inl` envolve o `IDirectInputDevice8W` de cada dispositivo aberto pelo jogo e registra:
+- `SetDataFormat` (tamanho do estado), `SetCooperativeLevel`, `Acquire` e `Unacquire`;
+- cada endereço de quem chama `GetDeviceState`/`GetDeviceData` (onde a entrada entra no jogo, para analisar no Ghidra);
+- os erros (`DIERR_INPUTLOST`/`NOTACQUIRED` na desconexão);
+- as mudanças de botões, POV e eixos;
+- a frequência de leitura (leituras por segundo).

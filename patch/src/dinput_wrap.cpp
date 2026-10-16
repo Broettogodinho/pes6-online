@@ -4,12 +4,18 @@
 #include <dinput.h>
 #include <shlobj.h>
 
+#include <intrin.h>
+
 #include <cstdio>
 #include <cstring>
 #include <format>
 #include <map>
+#include <set>
+#include <string_view>
 #include <string>
 #include <vector>
+
+#include <type_traits>
 
 #include "guid_map.h"
 #include "log.h"
@@ -78,6 +84,8 @@ std::vector<Guid> load_history(std::uint32_t product_key) {
   return out;
 }
 
+#include "dinput_device_wrap.inl"
+
 struct TraitsA {
   using DI = IDirectInput8A;
   using Dev = IDirectInputDevice8A;
@@ -129,7 +137,15 @@ class DirectInputWrap final : public T::DI {
 
   // IDirectInput8
   HRESULT STDMETHODCALLTYPE CreateDevice(REFGUID guid, typename T::Dev** dev, LPUNKNOWN outer) override {
-    return real_->CreateDevice(to_real(guid), dev, outer);
+    const GUID real = to_real(guid);
+    const HRESULT hr = real_->CreateDevice(real, dev, outer);
+    if constexpr (std::is_same_v<typename T::Dev, IDirectInputDevice8W>) {
+      // Envolve o dispositivo para observar a leitura (só a versão W, que o jogo usa).
+      if (SUCCEEDED(hr) && dev != nullptr && *dev != nullptr && outer == nullptr) {
+        *dev = new DeviceWrapW(*dev, describe(real));
+      }
+    }
+    return hr;
   }
 
   HRESULT STDMETHODCALLTYPE EnumDevices(DWORD type, typename T::EnumCb cb, LPVOID ref, DWORD flags) override {
@@ -192,6 +208,12 @@ class DirectInputWrap final : public T::DI {
   static BOOL PASCAL collect(const typename T::Inst* inst, LPVOID ctx) {
     static_cast<std::vector<typename T::Inst>*>(ctx)->push_back(*inst);
     return DIENUM_CONTINUE;
+  }
+
+  std::string describe(const GUID& real) const {
+    if (IsEqualGUID(real, GUID_SysKeyboard)) return "teclado";
+    if (IsEqualGUID(real, GUID_SysMouse)) return "mouse";
+    return text(to_bytes(real));
   }
 
   GUID to_real(REFGUID guid) const {
