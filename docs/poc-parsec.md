@@ -33,12 +33,35 @@ Objetivo: provar que uma Copa nativa do PES 6 pode ser jogada por vários amigos
 
 ## 3. Pontos a confirmar antes das sessões
 
+### PoC-01 · Parsec (SCRUM-47, respondido em 2026-10-15)
+
+Fonte: documentação oficial do Parsec (links abaixo). As páginas de suporte bloqueiam leitura automatizada; os trechos vieram da busca e devem ser conferidos no app. **CONFIRMADO** = dito na documentação atual · **A VERIFICAR** = fonte antiga, divergente ou ausente; testar na sessão T1.
+
+| Pergunta | Resposta | Situação |
+|---|---|---|
+| Quantos convidados no plano gratuito? | Até **20 conexões simultâneas** por padrão (ajustável pelo anfitrião); acima disso, a documentação alerta para a necessidade de muito upload. A Copa de 8 cabe com folga. | **CONFIRMADO** [1] |
+| Quantos controles simultâneos? | Post antigo do blog: "qualquer número conecta, até **4** com controle". A documentação atual não cita limite. Na Copa só **2** controles ficam ativos por vez. | **A VERIFICAR** [2] |
+| Dar/retirar controle durante a sessão? | Sim. Permissões por convidado (controle, teclado, mouse): clicar na foto do convidado na barra do Parsec. **Controle vem ligado por padrão** para convidados; teclado e mouse, desligados. Padrões ajustáveis por amigo. | **CONFIRMADO** [3] |
+| O anfitrião fixa o slot de cada convidado? | **Não.** O Parsec não atribui slots: a ordem segue a ordem em que os controles se conectam, e um controle só conecta quando o convidado aperta um botão. Para reordenar, usar **"Reset gamepad"** no ícone da bandeja e pedir que apertem um botão na ordem desejada. | **CONFIRMADO** [4] |
+| Tipo de controle virtual | Configurável no anfitrião ("Virtual Gamepad Type" / `host_gamepad_type`): **Xbox 360 (padrão, mais compatível)**, DualShock 4 ou DualSense. Driver próprio (VUSB), com ViGEm como reserva. | **CONFIRMADO** [4] |
+| Banda dos espectadores / qualidade só para eles | Não existe qualidade separada para espectadores: o limite de banda do anfitrião é **dividido entre todos** os convidados, e a qualidade cai para todos. Referência: 10 Mbps de upload por convidado; 50 Mbps mínimo para 2+ convidados. | **CONFIRMADO** [5] |
+| Cliente web × app nativo | Manter o app nativo (decodificação por hardware), como já está no §2. | **CONFIRMADO** (decisão do protocolo) |
+| Onde ver a perda de pacotes | Não encontrado na documentação. | **A VERIFICAR** no T1 |
+| Plano para o T4 | **Gratuito.** Os recursos pagos (Warp: vários monitores, 4:4:4, monitor virtual) não afetam a Copa. O uso tem de ser pessoal e sem fins comerciais (licença do plano gratuito). | Recomendação |
+| Alternativas se o Parsec travar | **Steam Remote Play Together:** base de 4 jogadores e exige jogo na Steam (**A VERIFICAR**). **Sunshine/Moonlight:** aceita vários clientes, mas todos dividem o mesmo controle, sem permissão por convidado. Nenhuma é melhor que o Parsec para a Copa. | **A VERIFICAR** [6] |
+
+**Consequências para as sessões:**
+- **Desligar o controle por padrão** para os amigos e ligar só para os 2 da vez. Senão, um espectador que aperte um botão cria um controle virtual e bagunça a ordem.
+- A troca de jogador entre partidas segue: retirar a permissão dos dois que saem → **Reset gamepad** → dar permissão aos dois que entram → cada um aperta um botão na ordem (lado esquerdo primeiro). Se o PES 6 não reconhecer o controle com o jogo aberto (PoC-02), essa é a primeira coisa a testar no T1.
+- No T4, com 7 convidados assistindo, o upload necessário fica perto do limite. Medir no T3 e, se preciso, baixar o limite de banda do anfitrião.
+
+Fontes: [1] [Max Client Connections To Your Host](https://support.parsec.app/hc/en-us/articles/32361376782228-Max-Client-Connections-To-Your-Host) · [2] [Play Co-Op Games Over The Internet](https://parsec.app/blog/play-co-op-games-over-the-internet-for-virtual-couch-gaming-5d84b550a8d8) · [3] [Hosting and Permissions](https://support.parsec.app/hc/en-us/articles/32381747079572-Hosting-and-Permissions) · [4] [Setup Gamepad](https://support.parsec.app/hc/en-us/articles/32381705301908-Setup-Gamepad) · [5] [Parsec Connectivity Requirements](https://support.parsec.app/hc/en-us/articles/32381460716180-Parsec-Connectivity-Requirements) e [Max Client Connections](https://support.parsec.app/hc/en-us/articles/32361376782228-Max-Client-Connections-To-Your-Host) · [6] [Sunshine: Advanced Usage](https://sunshinestream.readthedocs.io/en/latest/about/advanced_usage.html) · [Planos do Parsec](https://parsec.app/pricing)
+
+### PoC-02 · PES 6 (SCRUM-49, a testar)
+
 | ID | Pergunta | Onde |
 |---|---|---|
-| PoC-01 | Quantos convidados e quantos controles simultâneos o plano gratuito permite hoje? | Documentação oficial do Parsec |
-| PoC-01 | Dá para dar/retirar permissão de controle de um convidado durante a sessão? | Documentação + teste |
-| PoC-01 | O anfitrião consegue fixar ou atribuir a vaga (slot) de controle de cada convidado? | Documentação + teste |
-| PoC-01 | Onde aparece a perda de pacotes (overlay ou console do anfitrião)? | Documentação + teste |
+| PoC-01 | Onde aparece a perda de pacotes (overlay ou console do anfitrião)? | Teste no T1 |
 | PoC-02 | Quantos controles o PES 6 PC reconhece ao mesmo tempo? Como é a tela de escolha de lados antes da partida? | Teste no anfitrião |
 | PoC-02 | A Copa nativa aceita quantos jogadores humanos? | Teste no anfitrião |
 | PoC-02 | O PES 6 reconhece um controle conectado com o jogo já aberto? A ordem dos controles muda quando outro convidado assume o slot? A configuração do `settings.exe` continua valendo depois da troca? | Teste no anfitrião |
@@ -111,5 +134,5 @@ As métricas informativas não reprovam a fase, mas entram no ADR-003 para expli
 1. Anfitrião e convidados: [checklist de pré-sessão](poc-parsec-checklist.md). Anfitrião: backup de saves, speedtest, Parsec aberto, jogo aberto no menu. Conferir e registrar as condições fixas (§5). No T4, conferir se a DLL de mods carregou e se o log de hooks não tem erros.
 2. Convidados entram; anfitrião confere nomes e libera **só os controles dos 2 primeiros jogadores**.
 3. Criar a Copa nativa com o número de humanos do cenário; cada jogador escolhe o time quando for chamado.
-4. A cada partida: liberar controle dos 2 da vez → tela de lados → jogar → registrar métricas (anotando se o anfitrião jogou) → salvar a Copa.
+4. A cada partida: retirar o controle dos que saíram → **Reset gamepad** (bandeja do Parsec) → liberar controle dos 2 da vez → cada um aperta um botão, lado esquerdo primeiro (§3) → tela de lados → jogar → registrar métricas (anotando se o anfitrião jogou) → salvar a Copa.
 5. Ao fim: notas gerais e observações livres.

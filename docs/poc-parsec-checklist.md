@@ -5,7 +5,8 @@ Complementa o [protocolo](poc-parsec.md) (§7, passo 1). Resultados vão na plan
 ## Anfitrião
 
 ### Na véspera (D-1)
-- [ ] Parsec atualizado; conta logada; permissões de convidados configuradas (ninguém com controle por padrão).
+- [ ] Parsec atualizado; conta logada; permissões de convidados configuradas: **controle desligado por padrão** para todos os amigos (o Parsec liga por padrão).
+- [ ] "Virtual Gamepad Type" do anfitrião em **Xbox 360** (padrão do Parsec, mais compatível).
 - [ ] Overlay do Parsec mostra encoder por **hardware** (sem alerta de codificação por software).
 - [ ] Configuração do Parsec igual à das condições fixas da sessão (resolução, FPS, bitrate, codec).
 - [ ] Controles de teste reconhecidos pelo PES 6 (`settings.exe`) com o Parsec ligado.
