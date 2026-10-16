@@ -39,10 +39,11 @@ jobs:
       - uses: actions/checkout@v5
       - run: cmake -S patch -B build/patch -A Win32
       - run: cmake --build build/patch --config Release
+      - run: ctest --test-dir build/patch -C Release --output-on-failure
       - uses: actions/upload-artifact@v5
         with:
-          name: pes6online-dll
-          path: build/patch/Release/pes6online.dll
+          name: pes6online-dinput8
+          path: build/patch/Release/dinput8.dll
 
   runtime:
     name: Runtime WASM (node --test)
