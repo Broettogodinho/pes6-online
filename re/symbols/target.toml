@@ -1,11 +1,19 @@
 # Versão-alvo do pes6.exe. Todos os endereços em re/ valem SÓ para este hash.
-# Preenchido na F5 (SCRUM-24), a partir da cópia própria do Bruno.
+# Decisão do Bruno (2026-10-15, SCRUM-24): o alvo é o pes6.exe da instalação padrão dele,
+# descrita em docs/stack-pc.md §1. Medido em 2026-10-15 (sha256sum + leitura do cabeçalho PE).
 
 [target]
 name = "pes6.exe"
-version = "1.00"    # original, sem patches (decisão 2026-10-15)
-sha256 = ""         # sha256 do pes6.exe-alvo
-image_base = ""     # ex.: "0x00400000"
+version = "1.0.0.1"   # VersionInfo do arquivo; build de 2006-09-09 (timestamp PE)
+sha256 = "c3e8176e798db707151688b93d8c7812f3602ea27da23e56f2a0e8dc04ebc568"
+image_base = "0x00400000"
+entry_point = "0x0077CEE0"   # RVA
+size_bytes = 21880832
+# Observações (CONFIRMADO por leitura do arquivo; nada foi executado):
+# - o executável referencia kitserver/kload.dll (anexado pelo setup.exe do Kitserver):
+#   desanexar ou reanexar o Kitserver muda o hash;
+# - seções com nomes fora do padrão (age, agis, quod, .rld) -> INFERIDO: executável reempacotado;
+# - importa DINPUT8.dll (candidato a DLL proxy dos mods; d3d9.dll já é o dgVoodoo).
 
 # Exemplo de entrada (formato), sem dados reais:
 # [[function]]

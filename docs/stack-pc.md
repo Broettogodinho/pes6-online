@@ -9,11 +9,22 @@ Legenda: **CONFIRMADO** = fonte primária ou teste · **A VERIFICAR** = plausív
 
 | Item | Situação |
 |---|---|
-| Versão-alvo | **DECIDIDO (Bruno, 2026-10-15): v1.00 original, sem patches.** Base "zerada"; todas as nossas mudanças ficam na DLL e no servidor. Compatibilidade do Kitserver 6 e do Sixserver com a 1.00 é **A VERIFICAR** na SCRUM-24/25. |
-| Hash | **Será medido na cópia do Bruno** (SCRUM-24) e gravado em `re/symbols/target.toml`. |
-| Executável "decrypted / No-CD" | **Não adotado.** Ver regra abaixo. |
+| Versão-alvo | **DECIDIDO (Bruno, 2026-10-15, revisado no mesmo dia): a instalação padrão do Bruno**, considerada confiável por ele. Substitui a decisão anterior de usar a 1.00 da mídia, sem patches. |
+| Hash | **CONFIRMADO:** `sha256 c3e8176e…ebc568` (`pes6.exe` 1.0.0.1, build de 2006-09-09), gravado em `re/symbols/target.toml`. |
+| Executável | Seções com nomes fora do padrão (`age`, `agis`, `quod`, `.rld`): **INFERIDO** executável reempacotado. O alvo é este arquivo exatamente como está; qualquer byte diferente invalida endereços e assinaturas. |
 
-**Regra:** o projeto parte de um executável **original, de cópia legítima**. Não distribuímos, não exigimos e não usamos como referência executáveis modificados para burlar proteção contra cópia. Se a proteção original atrapalhar o carregamento da DLL, a solução precisa preservar o executável (por exemplo, carregamento por DLL proxy, que não altera o `pes6.exe`).
+### Instalação padrão
+
+| Componente | Função | Situação |
+|---|---|---|
+| `pes6.exe` (hash acima) | Jogo | **CONFIRMADO** (hash medido) |
+| dgVoodoo (`d3d8.dll`, `d3d9.dll`, `DDraw.dll`, `D3DImm.dll`, `dgVoodoo.conf`) | Patch de imagem: wrapper gráfico | **CONFIRMADO** presente; não altera o `pes6.exe` |
+| Kitserver (`kitserver/`, `kload.dll`) | Mods da comunidade (afs2fs, bootserv, bserv, camerazoomer…) | **CONFIRMADO** anexado ao `pes6.exe`: desanexar ou reanexar muda o hash |
+
+**Regras:**
+- Não distribuímos o jogo nem nenhum arquivo desta instalação; o repositório só guarda hash, endereços, assinaturas curtas e anotações (AGENTS.md §1).
+- Nossa DLL de mods não altera o `pes6.exe` em disco. Como `d3d9.dll` já é o dgVoodoo, o proxy preferido é o **`dinput8.dll`**: o executável importa `DINPUT8.dll` (**CONFIRMADO** por leitura do arquivo).
+- Na Fase 2, quem jogar precisa de uma instalação com o mesmo hash; o instalador recusa versões diferentes (ADR-001).
 
 ## 2. Sixserver (online)
 

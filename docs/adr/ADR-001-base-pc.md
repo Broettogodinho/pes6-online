@@ -41,3 +41,7 @@ O navegador fica para a **Fase 2**, com a estratégia escolhida por PoC (emulaç
 | Código antigo do Sixserver (Python 2, segurança) | SCRUM-44: modernização e revisão de segurança |
 | Versões diferentes do pes6.exe entre jogadores | Patch valida hash e assinaturas; instalador recusa versões não suportadas |
 | Anticheat/antivírus estranhar a DLL | Instalador transparente, código aberto, sem ofuscação |
+
+## Revisão de 2026-10-15 — versão-alvo
+
+Por decisão do Bruno, a versão-alvo deixa de ser a 1.00 da mídia, sem patches, e passa a ser a **instalação padrão do Bruno**: `pes6.exe` com hash registrado em `re/symbols/target.toml`, dgVoodoo (patch de imagem) e Kitserver. Detalhes em `docs/stack-pc.md` §1. Os hooks continuam validando hash e assinaturas; o proxy preferido passa a ser o `dinput8.dll`, porque o `d3d9.dll` já é do dgVoodoo.

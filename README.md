@@ -4,7 +4,7 @@
 
 A **Copa nativa** do Pro Evolution Soccer 6 (PC) jogada por amigos remotos como em 2005: todos na mesma sala, um único torneio e o controle passando para quem joga a próxima partida.
 
-- **Fase 1 (atual): sofá virtual.** Um anfitrião roda o `pes6.exe` 1.00 original com a **Copa nativa** e vários jogadores humanos; os amigos entram via Parsec, todos assistem e o controle passa para os 2 jogadores da vez ([ADR-002](docs/adr/ADR-002-sofa-virtual-parsec.md), [protocolo de testes](docs/poc-parsec.md)).
+- **Fase 1 (atual): sofá virtual.** Um anfitrião roda a instalação padrão do PES 6 ([versão-alvo](docs/stack-pc.md)) com a **Copa nativa** e vários jogadores humanos; os amigos entram via Parsec, todos assistem e o controle passa para os 2 jogadores da vez ([ADR-002](docs/adr/ADR-002-sofa-virtual-parsec.md), [protocolo de testes](docs/poc-parsec.md)).
 - **Fase 2: netplay no navegador**, se a Fase 1 for aprovada: cada jogador roda o jogo no navegador e só os comandos dos controles trafegam.
 - **Trilha paralela: engenharia reversa e mods** (`re/`, `patch/`). DLL proxy com hooks validados por assinatura, sem alterar arquivos do jogo em disco. Primeiro mod: suporte a mais controles na Copa.
 - **Ordem do roadmap:** engenharia reversa ∥ Parsec → torneio local (mod) → netplay → torneio online nativo. Cada etapa tem um plano B que volta ao básico ([roadmap](docs/roadmap.md)).

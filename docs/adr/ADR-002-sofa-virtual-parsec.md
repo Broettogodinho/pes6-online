@@ -2,7 +2,7 @@
 
 - **Status:** aprovado por Bruno em 2026-10-15
 - **Data:** 2026-10-15
-- **Revisa:** ADR-001 (a base continua sendo o PES 6 PC 1.00 original; muda *como* o online é feito)
+- **Revisa:** ADR-001 (a base continua sendo o PES 6 PC na versão-alvo de `re/symbols/target.toml`; muda *como* o online é feito)
 
 ## Contexto
 
@@ -13,7 +13,7 @@ O plano anterior (DLL de hooks + servidor de torneio sincronizando várias cópi
 ## Decisão
 
 **Fase 1 — Sofá virtual (PoC com Parsec)**
-- Um **anfitrião** roda o `pes6.exe` 1.00 original com a **Copa nativa** e N jogadores humanos.
+- Um **anfitrião** roda a instalação padrão do PES 6 (`docs/stack-pc.md` §1) com a **Copa nativa** e N jogadores humanos.
 - Os convidados entram via **Parsec**: todos assistem à partida; só os **2 jogadores da vez** recebem controle.
 - Antes de cada partida, os dois da vez escolhem o lado na **tela nativa** de controles, como em 2005.
 - Nenhuma alteração no jogo. Só o anfitrião precisa ter a cópia do jogo.
@@ -29,7 +29,7 @@ O plano anterior (DLL de hooks + servidor de torneio sincronizando várias cópi
 
 - A Copa nativa roda intacta: sorteio, tabela e regras são do próprio PES.
 - A engenharia reversa e a DLL de hooks saem do caminho crítico, mas **seguem ativas como trilha paralela de mods** (revisão de 2026-10-15, épico SCRUM-8): primeiro o mapeamento do sistema de entrada e o mod de mais controles, usado no teste T4.
-- Os mods usam DLL proxy (d3d9/dinput8) com hooks validados por endereço + assinatura; nenhum arquivo do jogo é alterado em disco.
+- Os mods usam DLL proxy (preferência pelo dinput8, já que o d3d9 é do dgVoodoo) com hooks validados por endereço + assinatura; nenhum arquivo do jogo é alterado em disco.
 - O modo "Torneio Online" nativo no menu do jogo fica como **visão de longo prazo**, apoiado no mapeamento de menus, Copa e save (SCRUM-20 a 23) e no servidor de torneio já escrito.
 - O caminho crítico passa a ser: cópia do jogo → anfitrião → sessões de teste.
 - A engine de Copa em Python já escrita (SCRUM-28) fica disponível, mas não é usada na Fase 1.
