@@ -59,3 +59,14 @@ Backup dos dois em `D:\RE\backup\pes6-config-<data>` (fora do repositório; são
 - os erros (`DIERR_INPUTLOST`/`NOTACQUIRED` na desconexão);
 - as mudanças de botões, POV e eixos;
 - a frequência de leitura (leituras por segundo).
+
+## Atribuição automática de controles (regras do Bruno, 2026-10-16)
+
+- **Problema relatado:** a atribuição é toda manual pelo `settings.exe`. O slot 1 é o teclado, então o teclado vira P1 e um controle só vale se cadastrado num slot.
+- **Estrutura (INFERIDO pela leitura do arquivo):** a partir de `0x0C`, 9 slots de `0x2C` bytes = `[u32 usado][GUID 16][mapeamento 24]`; slot vazio = `0`, GUID zerado, mapeamento `FF`. O jogo distribui os jogadores pelos slots cujo dispositivo está conectado, na ordem dos slots (bate com o relato: teclado P1, BT P2, com fio ausente).
+- **Regras:**
+  1. controles conectados = P1, P2… na ordem em que foram ligados;
+  2. teclado só entra se não houver nenhum controle;
+  3. controle nunca configurado recebe o padrão Xbox.
+- **Feito:** `patch/src/settings_builder.cpp` monta o arquivo com essas regras, preservando cabeçalho e rodapé (testes em `tests/test_settings_builder.cpp`, ctest 3/3).
+- **Pendente (próxima sessão):** interceptar a leitura do `settings.dat` pelo jogo (CreateFileA/W na DLL) e entregar o arquivo montado, sem alterar o original e sem afetar a gravação pelo `settings.exe`. Validar no jogo.

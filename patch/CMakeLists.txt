@@ -25,7 +25,7 @@ FetchContent_MakeAvailable(minhook)
 unset(CMAKE_POLICY_VERSION_MINIMUM)
 
 # Núcleo sem dependência do Windows: assinaturas (testável fora do jogo).
-add_library(pes6online_core STATIC src/signature.cpp src/guid_map.cpp)
+add_library(pes6online_core STATIC src/signature.cpp src/guid_map.cpp src/settings_builder.cpp)
 target_include_directories(pes6online_core PUBLIC include)
 
 # DLL proxy: gerada como dinput8.dll para ser carregada pelo pes6.exe.
@@ -57,3 +57,6 @@ add_test(NAME signature COMMAND test_signature)
 add_executable(test_guid_map tests/test_guid_map.cpp)
 target_link_libraries(test_guid_map PRIVATE pes6online_core)
 add_test(NAME guid_map COMMAND test_guid_map)
+add_executable(test_settings_builder tests/test_settings_builder.cpp)
+target_link_libraries(test_settings_builder PRIVATE pes6online_core)
+add_test(NAME settings_builder COMMAND test_settings_builder)
