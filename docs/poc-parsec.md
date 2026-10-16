@@ -2,13 +2,13 @@
 
 Objetivo: provar que uma Copa nativa do PES 6 pode ser jogada por vários amigos remotos, com um único anfitrião transmitindo o jogo via Parsec, com qualidade suficiente para justificar a Fase 2 (netplay). Decisão em ADR-002.
 
-**Dependências:** as sessões só acontecem depois que o anfitrião tiver a cópia original do jogo (SCRUM-46); o T4 também depende do mod de mais controles (SCRUM-57), instalado só no anfitrião. Os convidados não instalam o jogo: precisam apenas do app do Parsec e de um controle.
+**Dependências:** o anfitrião usa a instalação padrão do PES 6 ([`docs/stack-pc.md`](stack-pc.md) §1, hash em `re/symbols/target.toml`); o T4 também depende do mod de mais controles (SCRUM-57), instalado só no anfitrião. Os convidados não instalam o jogo: precisam apenas do app do Parsec e de um controle.
 
 ## 1. Arquitetura do teste
 
 ```
               ┌──────────────── Anfitrião (Windows) ────────────────┐
-              │ pes6.exe 1.00 original  ←  Copa nativa, N humanos   │
+              │ pes6.exe (versão-alvo)  ←  Copa nativa, N humanos   │
               │ Parsec Host  →  vídeo/áudio para todos               │
               │              ←  controle só dos 2 jogadores da vez   │
               └─────────────────────────────────────────────────────┘
@@ -19,7 +19,8 @@ Objetivo: provar que uma Copa nativa do PES 6 pode ser jogada por vários amigos
 ## 2. Pré-requisitos
 
 ### Anfitrião
-- Windows 10/11, PES 6 PC **1.00 original** instalado da mídia, sem patches. **Exceção:** no T4, a DLL de mods (proxy; nenhum arquivo do jogo é alterado em disco).
+- Windows 10/11 com a **instalação padrão do PES 6** (`docs/stack-pc.md` §1): `pes6.exe` com o hash de `re/symbols/target.toml`, dgVoodoo (imagem) e Kitserver. Nada além disso. **Exceção:** no T4, a DLL de mods (proxy; nenhum arquivo do jogo é alterado em disco).
+- Conferir o hash do `pes6.exe` antes da primeira sessão e sempre que reinstalar ou mexer no Kitserver.
 - GPU com encoder de vídeo por hardware (NVENC, AMF ou Quick Sync). Sem isso, o Parsec usa codificação por software e a latência sobe.
 - **Cabo de rede.** Upload medido (speedtest) registrado antes de cada sessão. Referência: ~10 Mbps por convidado, ou seja, ~30 Mbps no T3 e ~70 Mbps no T4. Se o upload não comportar, aplicar o plano B do ADR-002 (reduzir resolução/FPS, anfitrião em nuvem) e registrar.
 - Parsec instalado, conta criada; jogo em tela cheia ou janela, conforme o teste.
@@ -65,12 +66,14 @@ Objetivo: provar que uma Copa nativa do PES 6 pode ser jogada por vários amigos
 |---|---|
 | Parsec | Versão, resolução, FPS, bitrate, codec (H.264/H.265) |
 | Partida | Tempo de jogo e dificuldade: **iguais em todas as sessões** |
-| Ambiente | Data/horário, cidade e provedor de cada jogador, upload medido do anfitrião |
+| Ambiente | Data/horário, estado/região de cada jogador, upload medido do anfitrião |
+
+**Anonimização:** os resultados são versionados no git, então a planilha usa só apelidos (J1…J8; anfitrião = ANF) e estado/região. Nome, cidade e provedor não entram; a tabela apelido → nome fica só com o anfitrião, fora do repositório.
 | Mod (só T4) | Commit/versão da DLL de mods |
 
 ### Por partida
 
-Coletar em cada partida (planilha `poc-parsec-resultados`):
+Coletar em cada partida (planilha [`poc-parsec-resultados.xlsx`](poc-parsec-resultados.xlsx); a aba Resumo calcula medianas e portões do §6):
 
 | Métrica | Fonte | Meta | Tipo |
 |---|---|---|---|
@@ -105,7 +108,7 @@ As métricas informativas não reprovam a fase, mas entram no ADR-003 para expli
 
 ## 7. Roteiro de uma sessão
 
-1. Anfitrião: backup de saves, speedtest, Parsec aberto, jogo aberto no menu. Conferir e registrar as condições fixas (§5). No T4, conferir se a DLL de mods carregou e se o log de hooks não tem erros.
+1. Anfitrião e convidados: [checklist de pré-sessão](poc-parsec-checklist.md). Anfitrião: backup de saves, speedtest, Parsec aberto, jogo aberto no menu. Conferir e registrar as condições fixas (§5). No T4, conferir se a DLL de mods carregou e se o log de hooks não tem erros.
 2. Convidados entram; anfitrião confere nomes e libera **só os controles dos 2 primeiros jogadores**.
 3. Criar a Copa nativa com o número de humanos do cenário; cada jogador escolhe o time quando for chamado.
 4. A cada partida: liberar controle dos 2 da vez → tela de lados → jogar → registrar métricas (anotando se o anfitrião jogou) → salvar a Copa.

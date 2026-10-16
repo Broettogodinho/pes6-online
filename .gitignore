@@ -32,6 +32,10 @@ game/
 extracted/
 dumps/
 
+# tabela apelido -> nome da PoC Parsec (só local; os resultados versionados são anonimizados)
+docs/poc-parsec-jogadores*
+*.local.*
+
 # ===========================================================
 # Build e ambiente
 # ===========================================================
