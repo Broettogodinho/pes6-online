@@ -44,9 +44,17 @@ void init() {
 void write(std::string_view message) {
   std::lock_guard lock(g_mutex);
   if (g_file == nullptr) return;
+#ifdef _WIN32
+  // Hora local da máquina (system_clock é UTC).
+  SYSTEMTIME t{};
+  GetLocalTime(&t);
+  const auto line = std::format("[{:04}-{:02}-{:02} {:02}:{:02}:{:02}] {}\n", t.wYear, t.wMonth, t.wDay,
+                                t.wHour, t.wMinute, t.wSecond, message);
+#else
   const auto now = std::chrono::system_clock::now();
   const auto line = std::format("[{:%Y-%m-%d %H:%M:%S}] {}\n",
                                 std::chrono::floor<std::chrono::seconds>(now), message);
+#endif
   std::fputs(line.c_str(), g_file);
   std::fflush(g_file);
 }
