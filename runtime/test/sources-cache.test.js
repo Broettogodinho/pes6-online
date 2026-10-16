@@ -68,7 +68,8 @@ test("ChunkedReader não busca de novo o que está em cache e só busca o que fa
   await reader.read(4096, 4096); // bloco 1
   srv.log.length = 0;
   await reader.read(0, 4096 * 3); // blocos 0, 1 (cache) e 2
-  const ranges = srv.log.filter((r) => r.method === "GET").map((r) => r.range);
+  // as duas buscas saem em paralelo: a ordem de chegada no servidor varia
+  const ranges = srv.log.filter((r) => r.method === "GET").map((r) => r.range).sort();
   assert.deepEqual(ranges, ["bytes=0-4095", "bytes=8192-12287"]);
   assert.ok(reader.stats.hits >= 1);
 });
