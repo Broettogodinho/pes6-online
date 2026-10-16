@@ -113,6 +113,66 @@ const hooks::HookSpec kSpecs[] = {
 
 }  // namespace
 
+namespace {
+
+// Lê um valor só se a memória estiver legível; devolve `fallback` caso contrário.
+template <typename T>
+T safe_read(std::uintptr_t addr, T fallback) {
+  MEMORY_BASIC_INFORMATION mbi{};
+  const void* p = reinterpret_cast<const void*>(addr);
+  if (addr == 0 || VirtualQuery(p, &mbi, sizeof(mbi)) == 0 || mbi.State != MEM_COMMIT ||
+      (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0) {
+    return fallback;
+  }
+  return *reinterpret_cast<const T*>(addr);
+}
+
+struct WatchedState {
+  std::uint32_t scene_obj = 0;  // PTR_DAT_00bd7c7c
+  int scene = -1;               // [obj+0]
+  int step = -1;                // [obj+4]
+  int mode = -1;                // DAT_03be12c9 (byte)
+  bool operator==(const WatchedState&) const = default;
+};
+
+WatchedState read_state() {
+  WatchedState s;
+  s.scene_obj = safe_read<std::uint32_t>(kScenePtr, 0);
+  if (s.scene_obj != 0) {
+    s.scene = safe_read<int>(s.scene_obj, -1);
+    s.step = safe_read<int>(s.scene_obj + 4, -1);
+  }
+  s.mode = safe_read<std::uint8_t>(0x03BE12C9, 0xFF);
+  return s;
+}
+
+DWORD WINAPI state_watch_thread(LPVOID) {
+  WatchedState last{};
+  last.scene_obj = 0xFFFFFFFF;  // força o primeiro registro
+  int changes = 0;
+  constexpr int kLimit = 2000;
+  for (;;) {
+    const WatchedState now = read_state();
+    if (!(now == last)) {
+      if (++changes <= kLimit) {
+        log::write(std::format("estado: tela={} passo={} modo=0x{:02X} obj=0x{:08X}", now.scene, now.step,
+                               now.mode, now.scene_obj));
+      } else if (changes == kLimit + 1) {
+        log::write("estado: limite de log atingido");
+      }
+      last = now;
+    }
+    Sleep(100);
+  }
+}
+
+}  // namespace
+
+void start_state_watch() {
+  if (HANDLE t = CreateThread(nullptr, 0, state_watch_thread, nullptr, 0, nullptr)) CloseHandle(t);
+  log::write("estado: observação iniciada (tela, passo e modo a cada 100 ms)");
+}
+
 const hooks::HookSpec* specs(int* count) {
   *count = static_cast<int>(sizeof(kSpecs) / sizeof(kSpecs[0]));
   return kSpecs;

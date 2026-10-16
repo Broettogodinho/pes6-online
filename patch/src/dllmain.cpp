@@ -25,6 +25,7 @@ DWORD WINAPI init_thread(LPVOID) {
     if (pes6online::hooks::install(specs[i])) ++installed;
   }
   pes6online::log::write(std::format("hooks: {} de {} instalados", installed, count));
+  pes6online::probes::start_state_watch();
   return 0;
 }
 
@@ -34,7 +35,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_ATTACH) {
     DisableThreadLibraryCalls(module);
     pes6online::log::init();
-    pes6online::log::write("PES 6 Online: DLL carregada (v0.4.0, proxy dinput8, sondas de RE: telas + FUN_00864ac0)");
+    pes6online::log::write("PES 6 Online: DLL carregada (v0.5.0, proxy dinput8, sondas de RE: telas, estado e FUN_00864ac0)");
     if (HANDLE t = CreateThread(nullptr, 0, init_thread, nullptr, 0, nullptr)) CloseHandle(t);
   } else if (reason == DLL_PROCESS_DETACH && reserved == nullptr) {
     pes6online::hooks::shutdown();

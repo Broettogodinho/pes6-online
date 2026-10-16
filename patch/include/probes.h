@@ -11,4 +11,8 @@ namespace pes6online::probes {
 // Hooks de observação ativos. Cada um tem endereço + assinatura (re/notes/).
 const hooks::HookSpec* specs(int* count);
 
+// Inicia uma thread que observa (somente leitura) globais de estado do jogo e
+// registra no log cada mudança: tela atual, passo da tela e modo de jogo.
+void start_state_watch();
+
 }  // namespace pes6online::probes

@@ -38,4 +38,11 @@ O que cada id significa (menu principal, Copa, Liga, opções…) depende do tes
 
 - **Hipótese:** registrar cada `FUN_00666a20(id)` (tela anterior → nova, quem pediu), enquanto o Bruno navega anotando o que abriu, produz o mapa id → tela.
 - **Como:** hook de observação em `patch/src/probes.cpp` (DLL v0.4.0); registra até 500 trocas.
-- **Resultado:** aguardando a sessão de navegação.
+- **Resultado (2026-10-16):** o Bruno navegou por menu principal → partida → Copa → Liga → Master League → opções → edit, voltando ao menu entre cada uma. A sonda instalou (assinatura validada), mas registrou **0 chamadas** a `FUN_00666a20`.
+- **Conclusão (INFERIDO):** o despachante de 74 telas não comanda a navegação dos menus. Provavelmente comanda o fluxo de jogo (carregamento, partida…), e os menus usam outro mecanismo ou gravam o estado sem passar pelo setter.
+
+## Tentativa 2: observar a memória (2026-10-16)
+
+- **Hipótese:** observar o estado direto na memória pega mudanças venham de onde vierem.
+- **Como:** DLL v0.5.0, com uma thread que lê a cada 100 ms `PTR_DAT_00bd7c7c` (objeto, id da tela `+0`, passo `+4`) e `DAT_03be12c9` (modo) e registra cada mudança.
+- **Resultado:** aguardando uma nova sessão de navegação.
