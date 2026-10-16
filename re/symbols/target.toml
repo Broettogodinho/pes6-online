@@ -13,7 +13,8 @@ size_bytes = 21880832
 # - o executável referencia kitserver/kload.dll (anexado pelo setup.exe do Kitserver):
 #   desanexar ou reanexar o Kitserver muda o hash;
 # - seções com nomes fora do padrão (age, agis, quod, .rld) -> INFERIDO: executável reempacotado;
-# - importa DINPUT8.dll (candidato a DLL proxy dos mods; d3d9.dll já é o dgVoodoo).
+# - importa DINPUT8.dll (candidato a DLL proxy dos mods; d3d8.dll/d3d9.dll são do dgVoodoo).
+# - importa D3D8.DLL: o jogo usa Direct3D 8 (ver re/notes/imports.md).
 
 # Exemplo de entrada (formato), sem dados reais:
 # [[function]]

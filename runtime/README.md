@@ -37,6 +37,6 @@ npm run demo    # servidor local com carga de teste; abrir a URL no navegador
 ## O que esta PoC ainda não responde
 
 - **Execução de um binário x86 no navegador:** emulação x86 em WASM ou recompilação estática. O host acima instancia módulos que já são WASM; é a próxima etapa do SCRUM-36.
-- **Tradução gráfica Direct3D 9 → WebGPU:** aqui só há a inicialização do dispositivo.
+- **Tradução gráfica Direct3D 8 → WebGPU (o `pes6.exe` importa `D3D8.DLL`):** aqui só há a inicialização do dispositivo.
 - **Offsets acima de 2 GiB:** `runtime.read` usa `i32`; passar a `i64` quando um módulo real precisar.
 - **Integridade por bloco dos pacotes de dados:** hoje só o módulo tem SHA-256.

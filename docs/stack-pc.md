@@ -23,7 +23,7 @@ Legenda: **CONFIRMADO** = fonte primária ou teste · **A VERIFICAR** = plausív
 
 **Regras:**
 - Não distribuímos o jogo nem nenhum arquivo desta instalação; o repositório só guarda hash, endereços, assinaturas curtas e anotações (AGENTS.md §1).
-- Nossa DLL de mods não altera o `pes6.exe` em disco. Como `d3d9.dll` já é o dgVoodoo, o proxy preferido é o **`dinput8.dll`**: o executável importa `DINPUT8.dll` (**CONFIRMADO** por leitura do arquivo).
+- Nossa DLL de mods não altera o `pes6.exe` em disco. Como `d3d8.dll`/`d3d9.dll` são do dgVoodoo, o proxy preferido é o **`dinput8.dll`**: o executável importa `DINPUT8.dll` (**CONFIRMADO** por leitura do arquivo).
 - Na Fase 2, quem jogar precisa de uma instalação com o mesmo hash; o instalador recusa versões diferentes (ADR-001).
 
 ## 2. Sixserver (online)
@@ -49,7 +49,7 @@ Legenda: **CONFIRMADO** = fonte primária ou teste · **A VERIFICAR** = plausív
 | Item | Situação |
 |---|---|
 | DLL proxy carregada pelo jogo | Abordagem mantida |
-| `d3d8.dll` ou `dxgi.dll` | **CORRIGIDO (provável):** PES 6 PC usa **Direct3D 9**, então o proxy natural é `d3d9.dll` (ou `dinput8.dll`). `dxgi.dll` é de DX10+ e não é carregada pelo jogo. **A VERIFICAR** na lista de imports do `pes6.exe` (F4). |
+| `d3d8.dll` ou `dxgi.dll` | **CORRIGIDO (2026-10-16, tabela de importação):** o `pes6.exe` importa **`D3D8.DLL`** (`Direct3DCreate8`), ou seja, usa **Direct3D 8**, não 9; `dxgi.dll` é de DX10+. Na instalação padrão o `d3d8.dll` é do dgVoodoo, então o proxy fica no `dinput8.dll`. Ver `re/notes/imports.md`. |
 | MinHook para desviar funções | Mantido (SCRUM-25) |
 | Hooks em Winsock `send/recv` | Mantido para observar a rede; o resultado oficial vem do servidor |
 | Overlay de UI via `IDirect3DDevice9::Present` | Mantido como **plano B** para a UI do torneio, caso inserir itens no menu nativo seja difícil |
@@ -81,7 +81,7 @@ Fontes: SecurityLab (análise do `game.wasm`), Ubergizmo, Lowyat, Games.gg, ProP
 
 ### O que muda em relação à pesquisa original
 
-**1. Não temos código-fonte.** O GTA V web foi compilado de C/C++ com Emscripten. No PES 6 não existe fonte: o caminho equivalente é **recompilação estática do binário x86 para C** (técnica dos projetos N64Recomp/PS2Recomp/PSPRecomp) e só então Emscripten → WASM. A tradução gráfica também muda: **Direct3D 9 → WebGPU** (no GTA V era Direct3D 11).
+**1. Não temos código-fonte.** O GTA V web foi compilado de C/C++ com Emscripten. No PES 6 não existe fonte: o caminho equivalente é **recompilação estática do binário x86 para C** (técnica dos projetos N64Recomp/PS2Recomp/PSPRecomp) e só então Emscripten → WASM. A tradução gráfica também muda: **Direct3D 8 → WebGPU** (no GTA V era Direct3D 11).
 
 **2. Os bytes do jogo vêm da cópia do jogador, não de um servidor nosso.** Mantemos o mesmo mecanismo de streaming (leitura em trechos + cache OPFS), trocando a origem:
 - o jogador **seleciona a própria instalação** do PES 6 (File System Access API ou upload local);

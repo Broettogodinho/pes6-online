@@ -44,4 +44,4 @@ O navegador fica para a **Fase 2**, com a estratégia escolhida por PoC (emulaç
 
 ## Revisão de 2026-10-15 — versão-alvo
 
-Por decisão do Bruno, a versão-alvo deixa de ser a 1.00 da mídia, sem patches, e passa a ser a **instalação padrão do Bruno**: `pes6.exe` com hash registrado em `re/symbols/target.toml`, dgVoodoo (patch de imagem) e Kitserver. Detalhes em `docs/stack-pc.md` §1. Os hooks continuam validando hash e assinaturas; o proxy preferido passa a ser o `dinput8.dll`, porque o `d3d9.dll` já é do dgVoodoo.
+Por decisão do Bruno, a versão-alvo deixa de ser a 1.00 da mídia, sem patches, e passa a ser a **instalação padrão do Bruno**: `pes6.exe` com hash registrado em `re/symbols/target.toml`, dgVoodoo (patch de imagem) e Kitserver. Detalhes em `docs/stack-pc.md` §1. Os hooks continuam validando hash e assinaturas; o proxy preferido passa a ser o `dinput8.dll`, porque o `d3d8.dll`/`d3d9.dll` são do dgVoodoo (o jogo usa Direct3D 8).
