@@ -45,4 +45,5 @@ O que cada id significa (menu principal, Copa, Liga, opções…) depende do tes
 
 - **Hipótese:** observar o estado direto na memória pega mudanças venham de onde vierem.
 - **Como:** DLL v0.5.0, com uma thread que lê a cada 100 ms `PTR_DAT_00bd7c7c` (objeto, id da tela `+0`, passo `+4`) e `DAT_03be12c9` (modo) e registra cada mudança.
-- **Resultado:** aguardando uma nova sessão de navegação.
+- **Resultado (2026-10-16, sessão 15:28; ordem: partida → Master League → Copa → Liga → edit → opções):** o estado **não mudou nenhuma vez** (`tela=0 passo=0 modo=0x00`, objeto `0x03C8AA40`).
+- **Conclusão (INFERIDO):** o objeto de tela em `PTR_DAT_00bd7c7c` e `DAT_03be12c9` não participam da navegação dos menus; servem ao fluxo de partida e competição. Os menus usam outra estrutura, ainda a localizar (próximo: comparar a memória gravável entre telas).

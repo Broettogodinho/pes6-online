@@ -29,7 +29,8 @@ Backup dos dois em `D:\RE\backup\pes6-config-<data>` (fora do repositório; são
 
 - **Como:** DLL v0.6.0 (`patch/src/input_watch.cpp`). Uma instância própria do DirectInput (não mexe nos objetos do jogo) lista os controles a cada 5 s e registra no log GUID de instância, GUID de produto e nome sempre que algo muda.
 - **Teste:** com o jogo aberto, desconectar e reconectar um controle e conferir se o GUID de instância muda.
-- **Resultado:** aguardando o teste.
+- **Resultado (2026-10-16, sessão 15:28):** o DirectInput listou **1 controle**: `Controller (XBOX 360 For Windows)`, produto `{10403537-…}` (VID 3537/PID 1040), instância `{8282EDC0-0923-11F1-8002-444553540000}`, a mesma gravada no `settings.dat`. Os dois controles Xbox Bluetooth não apareceram na enumeração. Nenhuma mudança registrada durante a sessão (checagem a cada 5 s).
+- **Pendente:** saber qual controle foi desconectado e por quanto tempo, e em qual controle o mapeamento se perde. Checagem passou para 1 s.
 
 ## Correção pretendida (se a hipótese se confirmar)
 

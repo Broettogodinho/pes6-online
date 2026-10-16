@@ -50,7 +50,7 @@ DWORD WINAPI watch_thread(LPVOID) {
     log::write("controles: não foi possível criar o DirectInput para o diagnóstico");
     return 0;
   }
-  log::write("controles: diagnóstico iniciado (lista a cada 5 s, registra mudanças)");
+  log::write("controles: diagnóstico iniciado (lista a cada 1 s, registra mudanças)");
   std::vector<std::string> last;
   bool first = true;
   for (;;) {
@@ -62,7 +62,7 @@ DWORD WINAPI watch_thread(LPVOID) {
       last = std::move(now);
       first = false;
     }
-    Sleep(5000);
+    Sleep(1000);
   }
 }
 
