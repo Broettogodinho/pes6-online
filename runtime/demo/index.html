@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Runtime WASM · demo</title>
+  <style>
+    body { font: 14px/1.5 system-ui, sans-serif; margin: 24px; max-width: 760px; }
+    canvas { width: 320px; height: 180px; border: 1px solid #ccc; display: block; margin: 12px 0; }
+    pre { background: #f4f5f7; padding: 12px; overflow-x: auto; }
+    button { font: inherit; padding: 6px 12px; }
+  </style>
+</head>
+<body>
+  <h1>Runtime WASM · demo</h1>
+  <p>Carrega <code>/workload/manifest.json</code>, instancia o módulo de teste e lê o pacote de dados por HTTP Range.</p>
+  <label>Ler <input id="len" type="number" value="1048576" min="1" step="65536"> bytes</label>
+  <button id="run">Executar</button>
+  <canvas id="gpu" width="320" height="180"></canvas>
+  <pre id="out">pronto</pre>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

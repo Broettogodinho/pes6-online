@@ -1,0 +1,15 @@
+{
+  "name": "@pes6-online/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Runtime WebAssembly genérico: carregador remoto por streaming (HTTP Range), cache em blocos, sistema de arquivos virtual e host WASM/WebGPU.",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test \"test/**/*.test.js\"",
+    "demo": "node demo/serve.mjs"
+  }
+}
