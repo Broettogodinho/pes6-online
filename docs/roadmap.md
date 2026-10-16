@@ -23,6 +23,7 @@ Princípio: **nenhuma ideia é descartada.** Cada etapa tem um plano B que volta
 | 2 | Torneio local por mod | SCRUM-59 | F5 (26/11 → 24/12) | Item "Torneio" no menu, Copa criada por código, jogado via Parsec |
 | 3 | Netplay | SCRUM-11 / SCRUM-12 | F6–F9 (24/12 → 29/04/2027) | Cada jogador com a própria cópia; só os controles trafegam |
 | 4 | Torneio online nativo | SCRUM-58 (+ guardados: SCRUM-9 servidor, SCRUM-10 patch) | Após F9 | Item "Torneio Online", participantes da sala, servidor como autoridade |
+| 5 | **Fase 3: celular como cliente** (depois de tudo) | SCRUM-62 | Após a etapa 4 | Jogar no celular com controle Bluetooth; adaptação de tela; otimizador (qualidade, dados, bateria) |
 
 ## Planos B (voltar ao básico)
 
