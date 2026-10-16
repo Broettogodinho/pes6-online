@@ -1,5 +1,7 @@
 #include "probes.h"
 
+#include <intrin.h>
+
 #include <atomic>
 #include <format>
 #include <string>
@@ -29,6 +31,23 @@ std::string peek_text(const void* p) {
   return out;
 }
 
+// Primeiros `n` bytes em `p` em hex ("?" se a memória não for legível).
+std::string peek_bytes(const void* p, std::size_t n) {
+  MEMORY_BASIC_INFORMATION mbi{};
+  if (p == nullptr || VirtualQuery(p, &mbi, sizeof(mbi)) == 0 || mbi.State != MEM_COMMIT ||
+      (mbi.Protect & (PAGE_NOACCESS | PAGE_GUARD)) != 0) {
+    return "?";
+  }
+  const auto* s = static_cast<const unsigned char*>(p);
+  const auto* end = static_cast<const unsigned char*>(mbi.BaseAddress) + mbi.RegionSize;
+  std::string out;
+  for (std::size_t i = 0; i < n && s + i < end; ++i) {
+    if (!out.empty()) out.push_back(' ');
+    out += std::format("{:02X}", s[i]);
+  }
+  return out;
+}
+
 // ---------------------------------------------------------------------------
 // FUN_00864ac0(value, slot): grava `value` na tabela global de 23 posições em
 // 0x01132040 (switch 0..0x16). Chamada por FUN_00808490 com a tabela de 10 pares
@@ -41,11 +60,13 @@ std::atomic<int> g_slot_set_calls{0};
 constexpr int kSlotSetLogLimit = 200;
 
 void __cdecl slot_set_detour(void* value, int slot) {
+  // Endereço de retorno = instrução logo após o call no chamador (cruzar no Ghidra).
+  const auto caller = reinterpret_cast<std::uintptr_t>(_ReturnAddress());
   const int n = ++g_slot_set_calls;
   if (n <= kSlotSetLogLimit) {
     const std::string text = peek_text(value);
-    log::write(std::format("probe FUN_00864ac0 #{}: slot={} value=0x{:08X}{}", n, slot,
-                           reinterpret_cast<std::uintptr_t>(value),
+    log::write(std::format("probe FUN_00864ac0 #{}: slot={} value=0x{:08X} ret=0x{:08X} bytes=[{}]{}", n, slot,
+                           reinterpret_cast<std::uintptr_t>(value), caller, peek_bytes(value, 16),
                            text.empty() ? "" : std::format(" \"{}\"", text)));
   } else if (n == kSlotSetLogLimit + 1) {
     log::write("probe FUN_00864ac0: limite de log atingido; chamadas seguintes não são registradas");
