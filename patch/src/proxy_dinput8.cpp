@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "dinput_wrap.h"
+
 namespace {
 HMODULE g_real = nullptr;
 
@@ -33,7 +35,11 @@ HRESULT WINAPI Proxy_DirectInput8Create(HINSTANCE inst, DWORD version, REFIID ri
                                         LPUNKNOWN outer) {
   using Fn = HRESULT(WINAPI*)(HINSTANCE, DWORD, REFIID, LPVOID*, LPUNKNOWN);
   auto fn = real<Fn>("DirectInput8Create");
-  return fn == nullptr ? E_FAIL : fn(inst, version, riid, out, outer);
+  if (fn == nullptr) return E_FAIL;
+  const HRESULT hr = fn(inst, version, riid, out, outer);
+  // Envolve o objeto para estabilizar o GUID dos controles (dinput_wrap.h).
+  if (SUCCEEDED(hr) && out != nullptr && outer == nullptr) *out = pes6online::dinput_wrap::wrap(riid, *out);
+  return hr;
 }
 
 HRESULT WINAPI Proxy_DllCanUnloadNow() {

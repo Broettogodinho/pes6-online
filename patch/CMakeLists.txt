@@ -25,7 +25,7 @@ FetchContent_MakeAvailable(minhook)
 unset(CMAKE_POLICY_VERSION_MINIMUM)
 
 # Núcleo sem dependência do Windows: assinaturas (testável fora do jogo).
-add_library(pes6online_core STATIC src/signature.cpp)
+add_library(pes6online_core STATIC src/signature.cpp src/guid_map.cpp)
 target_include_directories(pes6online_core PUBLIC include)
 
 # DLL proxy: gerada como dinput8.dll para ser carregada pelo pes6.exe.
@@ -36,11 +36,12 @@ add_library(pes6online SHARED
   src/hooks.cpp
   src/probes.cpp
   src/input_watch.cpp
+  src/dinput_wrap.cpp
   src/proxy_dinput8.cpp
   src/dinput8.def
 )
 set_target_properties(pes6online PROPERTIES OUTPUT_NAME dinput8)
-target_link_libraries(pes6online PRIVATE pes6online_core minhook bcrypt dxguid)
+target_link_libraries(pes6online PRIVATE pes6online_core minhook bcrypt dxguid advapi32 shell32)
 
 if(MSVC)
   target_compile_options(pes6online PRIVATE /W4 /permissive-)
@@ -53,3 +54,6 @@ enable_testing()
 add_executable(test_signature tests/test_signature.cpp)
 target_link_libraries(test_signature PRIVATE pes6online_core)
 add_test(NAME signature COMMAND test_signature)
+add_executable(test_guid_map tests/test_guid_map.cpp)
+target_link_libraries(test_guid_map PRIVATE pes6online_core)
+add_test(NAME guid_map COMMAND test_guid_map)
