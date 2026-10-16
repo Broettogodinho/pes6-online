@@ -35,11 +35,12 @@ add_library(pes6online SHARED
   src/exe_check.cpp
   src/hooks.cpp
   src/probes.cpp
+  src/input_watch.cpp
   src/proxy_dinput8.cpp
   src/dinput8.def
 )
 set_target_properties(pes6online PROPERTIES OUTPUT_NAME dinput8)
-target_link_libraries(pes6online PRIVATE pes6online_core minhook bcrypt)
+target_link_libraries(pes6online PRIVATE pes6online_core minhook bcrypt dxguid)
 
 if(MSVC)
   target_compile_options(pes6online PRIVATE /W4 /permissive-)
