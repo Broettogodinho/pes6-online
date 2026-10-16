@@ -45,4 +45,4 @@ A extensão Java do VS Code acusa `The import ghidra... cannot be resolved` porq
 
 ## REA (servidor MCP)
 
-O `npx rea-agents setup` não registra no Claude Code quando ele roda só pela extensão do VS Code (sem o comando `claude` no terminal). O registro fica no `.mcp.json` da raiz do repositório (`rea-agents@6.5.0 --mcp`, com `GHIDRA_INSTALL_DIR` apontando para o Ghidra). Depois de recarregar a janela, o VS Code pede para aprovar o servidor.
+O `npx rea-agents setup` não registra no Claude Code quando ele roda só pela extensão do VS Code (sem o comando `claude` no terminal). O registro fica no `.mcp.json` da raiz do repositório (`rea-agents@6.5.0 --mcp`, com `GHIDRA_INSTALL_DIR` apontando para o Ghidra **com barras normais**, `C:/Tools/...`; com barras invertidas o REA pode recusar o caminho como "não absoluto"). Depois de recarregar a janela, o VS Code pede para aprovar o servidor.
