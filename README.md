@@ -12,13 +12,15 @@ A **Copa nativa** do Pro Evolution Soccer 6 (PC) jogada por amigos remotos como 
 Backlog e planejamento: Jira, projeto **PES 6 Online** (chave `SCRUM`).
 Documentação navegável: [Confluence · PES 6 Online](https://admdasantas.atlassian.net/wiki/spaces/PES6/overview) (espelho; a fonte da verdade é `docs/` neste repositório).
 
-## ⚠️ Aviso legal
+## ⚠️ Aviso legal e Conformidade Arquitetural
 
-Este projeto **não distribui o jogo**. Nenhum executável, DLL original, asset (`.afs`, `.img`), option file ou save do PES 6 faz parte deste repositório, e nunca deve fazer.
+Este projeto é desenvolvido sem fins lucrativos, destinado puramente à preservação técnica e diversão dentro de um círculo privado de usuários. O jogo-alvo não está mais disponível em lojas oficiais (abandonware). 
 
-Cada jogador usa a **própria cópia legítima** do PES 6 PC. Este repositório contém apenas código original: o patch (DLL de hooks), o servidor de torneio, o portal web e documentação de engenharia reversa (nomes de funções, endereços e anotações em texto).
+Este repositório de código **não distribui o jogo**[cite: 3]. Nenhum executável original, DLL, asset (`.afs`, `.img`), option file ou save do PES 6 faz parte deste repositório, e nunca deve fazer[cite: 3]. 
 
-Pro Evolution Soccer é marca da Konami. Este projeto não é afiliado nem endossado pela Konami.
+**Arquitetura Web (Fase 2):** A versão web atua estritamente como um framework de execução em memória via WebAssembly (WASM). A plataforma apresenta uma tela de seleção que aponta e carrega os recursos necessários diretamente na memória (RAM) do navegador do visitante sob demanda[cite: 3]. A arquitetura é desenhada exclusivamente para execução online do motor, não permitindo ou distribuindo os arquivos originais da Konami para download local no computador do usuário[cite: 3].
+
+Este repositório contém apenas código original: o patch (DLL de hooks), o servidor de torneio, o portal web e a documentação de engenharia reversa[cite: 3]. Pro Evolution Soccer é uma marca registrada da Konami. Este projeto não possui vínculos, patrocínios ou afiliações com a Konami[cite: 3].
 
 ## Estrutura
 
