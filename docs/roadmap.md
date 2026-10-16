@@ -6,14 +6,20 @@ Ordem acordada em 2026-10-15:
 engenharia reversa ∥ Parsec  →  torneio local (mod)  →  netplay  →  torneio online nativo
 ```
 
+**Revisão de 2026-10-15 (Bruno):** a **engenharia reversa é a trilha principal**. É ela que define o que dá e o que não dá para fazer dentro do jogo, e o alvo final é um **mod dentro do PES 6**: modo "Torneio Online" no menu do jogo, não só Parsec e servidores da comunidade. O Parsec continua como trilha de apoio. Cadeia da engenharia reversa:
+
+```
+SCRUM-18 ambiente → SCRUM-24 assinaturas → SCRUM-25 DLL de mods → SCRUM-56/20/23 mapeamento (entrada, Copa, menus) → SCRUM-57/60/61 mods
+```
+
 Princípio: **nenhuma ideia é descartada.** Cada etapa tem um plano B que volta ao básico; o que foi mapeado ou escrito fica no repositório para ser retomado depois.
 
 ## Etapas
 
 | # | Etapa | Épico | Filas | Entrega |
 |---|---|---|---|---|
-| 1 | Engenharia reversa e mods (paralela) | SCRUM-8 | F3–F4 | Sistema de entrada mapeado, DLL de mods, mod de mais controles |
-| 1 | Sofá virtual com Parsec (paralela) | SCRUM-7 | F2–F4 | Copa nativa com 8 humanos via Parsec; ADR-003 |
+| 1 | **Engenharia reversa e mods (principal)** | SCRUM-8 | F3–F4 | Sistema de entrada, Copa e menus mapeados; DLL de mods; mod de mais controles |
+| 1 | Sofá virtual com Parsec (apoio) | SCRUM-7 | F2–F4 | Copa nativa com 8 humanos via Parsec; ADR-003 |
 | 2 | Torneio local por mod | SCRUM-59 | F5 (26/11 → 24/12) | Item "Torneio" no menu, Copa criada por código, jogado via Parsec |
 | 3 | Netplay | SCRUM-11 / SCRUM-12 | F6–F9 (24/12 → 29/04/2027) | Cada jogador com a própria cópia; só os controles trafegam |
 | 4 | Torneio online nativo | SCRUM-58 (+ guardados: SCRUM-9 servidor, SCRUM-10 patch) | Após F9 | Item "Torneio Online", participantes da sala, servidor como autoridade |
