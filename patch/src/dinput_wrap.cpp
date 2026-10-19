@@ -57,9 +57,12 @@ std::vector<Guid> load_saved() {
   return guid_map::saved_guids_from_settings(data.data(), n);
 }
 
+}  // namespace
+
 // GUIDs de instância que o Windows já atribuiu a um modelo (VID/PID), pelo
 // registro do DirectInput: ...\DirectInput\VID_xxxx&PID_yyyy\Calibration\N\GUID.
-std::vector<Guid> load_history(std::uint32_t product_key) {
+std::vector<guid_map::Guid> load_history(std::uint32_t product_key) {
+  using guid_map::Guid;
   std::vector<Guid> out;
   const unsigned vid = product_key & 0xFFFF;
   const unsigned pid = product_key >> 16;
@@ -83,6 +86,10 @@ std::vector<Guid> load_history(std::uint32_t product_key) {
   RegCloseKey(root);
   return out;
 }
+
+namespace {
+
+bool g_remap = true;
 
 #include "dinput_device_wrap.inl"
 
@@ -164,7 +171,7 @@ class DirectInputWrap final : public T::DI {
 
     for (std::size_t i = 0; i < items.size(); ++i) {
       typename T::Inst copy = items[i];
-      if (presented[i] != devices[i].instance) {
+      if (g_remap && presented[i] != devices[i].instance) {
         presented_to_real_[presented[i]] = items[i].guidInstance;
         copy.guidInstance = from_bytes(presented[i]);
         const auto seen = logged_.find(presented[i]);
@@ -228,6 +235,8 @@ class DirectInputWrap final : public T::DI {
 };
 
 }  // namespace
+
+void set_guid_remap(bool on) { g_remap = on; }
 
 void* wrap(REFIID riid, void* real) {
   if (real == nullptr) return real;

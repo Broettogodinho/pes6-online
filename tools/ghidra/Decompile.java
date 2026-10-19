@@ -33,8 +33,15 @@ public class Decompile extends GhidraScript {
                 Address addr = toAddr(a.trim());
                 Function f = getFunctionContaining(addr);
                 if (f == null) {
-                    w.println("=== " + a + ": sem função");
-                    continue;
+                    // Métodos chamados só por tabela virtual podem não ter virado função na
+                    // análise automática: desmonta e cria a função na hora (sem salvar com -readOnly).
+                    disassemble(addr);
+                    f = createFunction(addr, null);
+                    if (f == null) {
+                        w.println("=== " + a + ": sem função");
+                        continue;
+                    }
+                    w.println("// função criada pelo script em " + addr);
                 }
                 w.println("=== " + f.getName() + " @ " + f.getEntryPoint() + " (" + f.getBody().getNumAddresses()
                         + " bytes)");

@@ -23,3 +23,33 @@ size_bytes = 21880832
 # signature = "55 8B EC ?? ??"   # padrão de bytes curto, ?? = curinga
 # status = "INFERIDO"            # INFERIDO | CONFIRMADO
 # notes = "re/notes/Cup_AdvanceRound.md"
+
+# --- Funções mapeadas (2026-10-19). Evidência em re/notes/. ---
+
+[[function]]
+name = "Input_KeyboardRead"          # FUN_00417430
+address = "0x00417430"
+signature = "53 56 8B F1 8B 86 60 04 00 00 33 DB 3B C3 0F 84 ?? ?? ?? ??"
+status = "INFERIDO"                  # chamada em 0x0041748F CONFIRMADA em execução
+notes = "re/notes/entrada-leitura.md"
+
+[[function]]
+name = "Input_JoystickRead"          # FUN_004176f0
+address = "0x004176F0"
+signature = "81 EC 14 01 00 00 55 8B E9 8B 85 60 04 00 00 85 C0"
+status = "INFERIDO"
+notes = "re/notes/entrada-leitura.md"
+
+[[function]]
+name = "FUN_00864ac0"                # setter de tabela de 23 posições
+address = "0x00864AC0"
+signature = "8B 44 24 08 83 F8 16 0F 87 ?? ?? ?? ?? FF 24 85 ?? ?? ?? ??"
+status = "INFERIDO"                  # chamadas CONFIRMADAS pela sonda
+notes = "re/notes/FUN_00864ac0.md"
+
+[[function]]
+name = "FUN_0068d260"                # despachante de telas (74)
+address = "0x0068D260"
+signature = "56 83 CE FF E8 ?? ?? ?? ?? E8 ?? ?? ?? ?? 83 F8 49"
+status = "INFERIDO"
+notes = "re/notes/telas.md"

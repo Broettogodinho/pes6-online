@@ -37,6 +37,7 @@ add_library(pes6online SHARED
   src/probes.cpp
   src/input_watch.cpp
   src/dinput_wrap.cpp
+  src/settings_redirect.cpp
   src/proxy_dinput8.cpp
   src/dinput8.def
 )

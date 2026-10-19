@@ -13,6 +13,7 @@
 #include "input_watch.h"
 #include "log.h"
 #include "probes.h"
+#include "settings_redirect.h"
 
 namespace {
 
@@ -37,7 +38,9 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_ATTACH) {
     DisableThreadLibraryCalls(module);
     pes6online::log::init();
-    pes6online::log::write("PES 6 Online: DLL carregada (v0.8.0, proxy dinput8, GUID estável e observação da leitura dos controles, sondas de RE)");
+    pes6online::log::write("PES 6 Online: DLL carregada (v0.9.0, proxy dinput8, atribuição automática e observação da leitura dos controles, sondas de RE)");
+    // Cedo, antes de o jogo ler o settings.dat: atribuição automática dos controles.
+    pes6online::settings_redirect::install();
     if (HANDLE t = CreateThread(nullptr, 0, init_thread, nullptr, 0, nullptr)) CloseHandle(t);
   } else if (reason == DLL_PROCESS_DETACH && reserved == nullptr) {
     pes6online::hooks::shutdown();
