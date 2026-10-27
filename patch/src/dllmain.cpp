@@ -40,7 +40,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_ATTACH) {
     DisableThreadLibraryCalls(module);
     pes6online::log::init();
-    pes6online::log::write("PES 6 Online: DLL carregada (v0.10.0, proxy dinput8, atribuição automática, observação dos controles, sondas de RE)");
+    pes6online::log::write("PES 6 Online: DLL carregada (v0.11.0, proxy dinput8, atribuição automática, observação dos controles, sondas de RE, busca por memória)");
     // Cedo, antes de o jogo ler o settings.dat: atribuição automática dos controles.
     pes6online::settings_redirect::install();
     if (HANDLE t = CreateThread(nullptr, 0, init_thread, nullptr, 0, nullptr)) CloseHandle(t);

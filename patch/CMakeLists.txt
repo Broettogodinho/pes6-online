@@ -39,6 +39,7 @@ add_library(pes6online SHARED
   src/dinput_wrap.cpp
   src/settings_redirect.cpp
   src/mem_probe.cpp
+  src/mem_diff.cpp
   src/proxy_dinput8.cpp
   src/dinput8.def
 )

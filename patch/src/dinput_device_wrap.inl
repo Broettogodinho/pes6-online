@@ -187,6 +187,7 @@ class DeviceWrapW final : public IDirectInputDevice8W {
     const ULONGLONG now = GetTickCount64();
     if (script_start_ == 0) script_start_ = now;
     const ULONGLONG t = now - script_start_;
+    mem_diff::on_tick(t);
     for (std::size_t i = 0; i < script_.size(); ++i) {
       const KeyPress& k = script_[i];
       if (t >= k.at && t < k.at + k.duration) {

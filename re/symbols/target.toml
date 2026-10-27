@@ -53,3 +53,38 @@ address = "0x0068D260"
 signature = "56 83 CE FF E8 ?? ?? ?? ?? E8 ?? ?? ?? ?? 83 F8 49"
 status = "INFERIDO"
 notes = "re/notes/telas.md"
+
+[[function]]
+name = "App_RunMode"                 # FUN_00661550, switch (DAT_03becc60); caso 4 = menus
+address = "0x00661550"
+signature = "A1 ?? ?? ?? ?? 83 F8 65 0F 87 ?? ?? ?? ?? 0F B6 80 ?? ?? ?? ??"
+status = "INFERIDO"
+notes = "re/notes/telas.md"
+
+[[function]]
+name = "Menu_Run"                    # FUN_009c1a30
+address = "0x009C1A30"
+signature = "0F BE 05 ?? ?? ?? ?? 83 E8 00 74 1D 48 74 6A 48"
+status = "INFERIDO"
+notes = "re/notes/telas.md"
+
+[[function]]
+name = "Menu_Update"                 # FUN_009c1800
+address = "0x009C1800"
+signature = "0F BF 05 ?? ?? ?? ?? 83 F8 08 77 0C FF 24 85 ?? ?? ?? ??"
+status = "INFERIDO"
+notes = "re/notes/telas.md"
+
+[[function]]
+name = "MainMenu_Update"             # FUN_009d8310
+address = "0x009D8310"
+signature = "0F BF 05 ?? ?? ?? ?? 83 F8 0E 0F 87 ?? ?? ?? ??"
+status = "INFERIDO"
+notes = "re/notes/telas.md"
+
+[[function]]
+name = "MainMenu_ConfirmItem"        # FUN_009d72d0, cursor (0x03A70CA8, CONFIRMADO) -> modo DAT_03be12c9
+address = "0x009D72D0"
+signature = "8B 0D ?? ?? ?? ?? 83 F9 08 8B 15 ?? ?? ?? ?? B8 01 00 00 00"
+status = "INFERIDO"
+notes = "re/notes/telas.md"

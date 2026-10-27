@@ -19,6 +19,7 @@
 
 #include "guid_map.h"
 #include "log.h"
+#include "mem_diff.h"
 
 namespace pes6online::dinput_wrap {
 namespace {
