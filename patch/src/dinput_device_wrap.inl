@@ -73,6 +73,7 @@ class DeviceWrapW final : public IDirectInputDevice8W {
     if (FAILED(hr)) {
       note_result("GetDeviceState", hr);
     } else if (data != nullptr) {
+      if (size == 256) inject_keys(static_cast<std::uint8_t*>(data));
       observe_state(size, static_cast<const std::uint8_t*>(data));
     }
     rate_tick();
@@ -153,6 +154,55 @@ class DeviceWrapW final : public IDirectInputDevice8W {
   }
 
  private:
+  // Injeção de teclas por roteiro (testes automáticos sem ninguém no PC; base do
+  // netplay, que injeta a entrada remota no mesmo ponto). Roteiro opcional em
+  // `pes6online_inject.txt` na pasta do jogo: uma linha por tecla,
+  // "<ms desde a 1ª leitura> <código DIK em hex> <duração ms>", ex.: "8000 1C 200".
+  struct KeyPress {
+    ULONGLONG at;
+    std::uint8_t dik;
+    ULONGLONG duration;
+  };
+
+  void load_script() {
+    script_loaded_ = true;
+    wchar_t path[MAX_PATH] = {};
+    GetModuleFileNameW(nullptr, path, MAX_PATH);
+    std::wstring dir(path);
+    dir = dir.substr(0, dir.find_last_of(L"\\/") + 1);
+    std::FILE* f = _wfopen((dir + L"pes6online_inject.txt").c_str(), L"r");
+    if (f == nullptr) return;
+    unsigned long long at = 0, dur = 0;
+    unsigned dik = 0;
+    while (std::fscanf(f, "%llu %x %llu", &at, &dik, &dur) == 3) {
+      script_.push_back({at, static_cast<std::uint8_t>(dik), dur});
+    }
+    std::fclose(f);
+    log::write(std::format("entrada: roteiro de injeção carregado ({} tecla(s))", script_.size()));
+  }
+
+  void inject_keys(std::uint8_t* keys) {
+    if (!script_loaded_) load_script();
+    if (script_.empty()) return;
+    const ULONGLONG now = GetTickCount64();
+    if (script_start_ == 0) script_start_ = now;
+    const ULONGLONG t = now - script_start_;
+    for (std::size_t i = 0; i < script_.size(); ++i) {
+      const KeyPress& k = script_[i];
+      if (t >= k.at && t < k.at + k.duration) {
+        keys[k.dik] = 0x80;
+        if (injected_.insert(i).second) {
+          log::write(std::format("entrada: injetada tecla DIK 0x{:02X} aos {} ms", k.dik, t));
+        }
+      }
+    }
+  }
+
+  bool script_loaded_ = false;
+  std::vector<KeyPress> script_;
+  ULONGLONG script_start_ = 0;
+  std::set<std::size_t> injected_;
+
   // Registra resultados de erro (ex.: DIERR_INPUTLOST na desconexão) sem repetir em série.
   void note_result(const char* what, HRESULT hr) {
     if (hr == last_hr_ && std::string_view(what) == last_what_) {

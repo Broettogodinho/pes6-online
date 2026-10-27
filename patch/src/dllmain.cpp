@@ -12,6 +12,7 @@
 #include "hooks.h"
 #include "input_watch.h"
 #include "log.h"
+#include "mem_probe.h"
 #include "probes.h"
 #include "settings_redirect.h"
 
@@ -29,6 +30,7 @@ DWORD WINAPI init_thread(LPVOID) {
   pes6online::log::write(std::format("hooks: {} de {} instalados", installed, count));
   pes6online::probes::start_state_watch();
   pes6online::input_watch::start();
+  pes6online::mem_probe::start();
   return 0;
 }
 
@@ -38,7 +40,7 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved) {
   if (reason == DLL_PROCESS_ATTACH) {
     DisableThreadLibraryCalls(module);
     pes6online::log::init();
-    pes6online::log::write("PES 6 Online: DLL carregada (v0.9.0, proxy dinput8, atribuição automática e observação da leitura dos controles, sondas de RE)");
+    pes6online::log::write("PES 6 Online: DLL carregada (v0.10.0, proxy dinput8, atribuição automática, observação dos controles, sondas de RE)");
     // Cedo, antes de o jogo ler o settings.dat: atribuição automática dos controles.
     pes6online::settings_redirect::install();
     if (HANDLE t = CreateThread(nullptr, 0, init_thread, nullptr, 0, nullptr)) CloseHandle(t);

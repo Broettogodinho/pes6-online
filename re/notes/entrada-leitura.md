@@ -45,6 +45,12 @@ Duas classes irmãs com tabelas de 13 métodos, uma após a outra; os métodos 1
   6. em falha, marca "não adquirido".
 - **Situação:** INFERIDO (leitura do código; ainda sem execução com controle conectado).
 
+## Injeção de teclas (2026-10-27): CONFIRMADO
+
+O envoltório do teclado (`dinput_device_wrap.inl`) aplica um roteiro opcional `pes6online_inject.txt` na pasta do jogo: uma linha por tecla, `"<ms desde a 1ª leitura> <código DIK hex> <duração ms>"`. Teste automático: Enter (`0x1C`) aos 6 s passou do "PRESS START" e o jogo carregou o option file.
+- **Testes automáticos:** dá para navegar no jogo sem ninguém no PC.
+- **Netplay:** demonstra a injeção no mesmo ponto em que entrará a entrada remota.
+
 ## Consequências
 
 - **Netplay (SCRUM-38):** tudo o que o jogo sabe do controle vem do `GetDeviceState`, que passa pelo envoltório da nossa DLL. Ponto de captura e injeção sem alterar o jogo: capturar o `DIJOYSTATE2` local e, no lockstep, entregar ao jogo o estado do jogador remoto no mesmo quadro.

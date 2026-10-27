@@ -6,11 +6,14 @@
 
 #include <MinHook.h>
 
+#include <intrin.h>
+
 #include <algorithm>
 #include <cstdio>
 #include <cwctype>
 #include <format>
 #include <map>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -128,11 +131,81 @@ std::wstring redirect_for(const std::wstring& path, DWORD access) {
   return g_virtual_path;
 }
 
+// --- Rastreio de leitura dos saves (SCRUM-22) -------------------------------
+// Para achar a rotina que decifra o option file: guarda o handle quando o jogo
+// abre um arquivo KONAMI-WIN32PES6*, e registra cada ReadFile dele com a pilha
+// de chamadas. Só observa; nada é alterado.
+using ReadFileFn = BOOL(WINAPI*)(HANDLE, LPVOID, DWORD, LPDWORD, LPOVERLAPPED);
+ReadFileFn g_read = nullptr;
+std::mutex g_trace_mutex;
+std::map<HANDLE, std::wstring> g_traced;
+int g_trace_logs = 0;
+
+bool is_save_file(const std::wstring& path) {
+  std::wstring p = path;
+  std::transform(p.begin(), p.end(), p.begin(), [](wchar_t c) { return std::towupper(c); });
+  return p.find(L"KONAMI-WIN32PES6") != std::wstring::npos;
+}
+
+std::string stack_text(int skip) {
+  void* frames[8] = {};
+  const USHORT n = RtlCaptureStackBackTrace(static_cast<DWORD>(skip), 8, frames, nullptr);
+  std::string out;
+  for (USHORT i = 0; i < n; ++i) out += std::format("{}0x{:08X}", i ? " < " : "", reinterpret_cast<std::uintptr_t>(frames[i]));
+  return out;
+}
+
+int g_open_logs = 0;
+
+void note_open(HANDLE h, const std::wstring& path) {
+  {
+    // Diagnóstico: registra os primeiros arquivos abertos pelo jogo (caminho e quem abriu).
+    std::lock_guard lock(g_trace_mutex);
+    // Ignora dispositivos (caminhos que começam com duas barras invertidas, ex.: controles HID).
+    const bool device = path.size() >= 2 && path[0] == L'\\' && path[1] == L'\\';
+    if (!device && g_open_logs < 150) {
+      ++g_open_logs;
+      std::string name;
+      for (wchar_t c : path) name.push_back(c < 0x80 ? static_cast<char>(c) : '?');
+      log::write(std::format("arquivos: abre \"{}\" -> {} ret 0x{:08X}", name,
+                             h == INVALID_HANDLE_VALUE ? "falhou" : "ok",
+                             reinterpret_cast<std::uintptr_t>(_ReturnAddress())));
+    }
+  }
+  if (h == INVALID_HANDLE_VALUE || !is_save_file(path)) return;
+  std::lock_guard lock(g_trace_mutex);
+  g_traced[h] = path;
+  std::string name;
+  for (wchar_t c : path.substr(path.find_last_of(L"\\/") + 1)) name.push_back(c < 0x80 ? static_cast<char>(c) : '?');
+  log::write(std::format("saves: aberto {} (handle 0x{:X}) pilha: {}", name, reinterpret_cast<std::uintptr_t>(h),
+                         stack_text(2)));
+}
+
+BOOL WINAPI read_detour(HANDLE h, LPVOID buf, DWORD want, LPDWORD got, LPOVERLAPPED ov) {
+  const BOOL ok = g_read(h, buf, want, got, ov);
+  bool traced = false;
+  {
+    std::lock_guard lock(g_trace_mutex);
+    traced = g_traced.contains(h) && g_trace_logs < 200;
+    if (traced) ++g_trace_logs;
+  }
+  if (traced) {
+    log::write(std::format("saves: ReadFile handle 0x{:X} buffer 0x{:08X} pedido {} lido {} pilha: {}",
+                           reinterpret_cast<std::uintptr_t>(h), reinterpret_cast<std::uintptr_t>(buf), want,
+                           got ? *got : 0, stack_text(1)));
+  }
+  return ok;
+}
+
 HANDLE WINAPI create_a_detour(LPCSTR name, DWORD access, DWORD share, LPSECURITY_ATTRIBUTES sa, DWORD disp,
                               DWORD flags, HANDLE tmpl) {
   if (name != nullptr && !t_busy) {
-    const std::wstring target = redirect_for(widen(name), access);
+    const std::wstring wide = widen(name);
+    const std::wstring target = redirect_for(wide, access);
     if (!target.empty()) return g_create_w(target.c_str(), access, share, sa, disp, flags, tmpl);
+    const HANDLE h = g_create_a(name, access, share, sa, disp, flags, tmpl);
+    note_open(h, wide);
+    return h;
   }
   return g_create_a(name, access, share, sa, disp, flags, tmpl);
 }
@@ -142,6 +215,9 @@ HANDLE WINAPI create_w_detour(LPCWSTR name, DWORD access, DWORD share, LPSECURIT
   if (name != nullptr && !t_busy) {
     const std::wstring target = redirect_for(name, access);
     if (!target.empty()) return g_create_w(target.c_str(), access, share, sa, disp, flags, tmpl);
+    const HANDLE h = g_create_w(name, access, share, sa, disp, flags, tmpl);
+    note_open(h, name);
+    return h;
   }
   return g_create_w(name, access, share, sa, disp, flags, tmpl);
 }
@@ -175,6 +251,9 @@ void install() {
                            MH_StatusToString(w)));
     return;
   }
+  const MH_STATUS r = MH_CreateHookApi(L"kernel32", "ReadFile", reinterpret_cast<LPVOID>(&read_detour),
+                                       reinterpret_cast<LPVOID*>(&g_read));
+  if (r != MH_OK) log::write(std::format("saves: hook de ReadFile não criado ({})", MH_StatusToString(r)));
   MH_EnableHook(MH_ALL_HOOKS);
   dinput_wrap::set_guid_remap(false);  // o arquivo virtual já usa os GUIDs reais
   log::write("controles: atribuição automática ativa (settings.dat virtual na leitura do jogo)");

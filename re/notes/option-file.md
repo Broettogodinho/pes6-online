@@ -31,6 +31,23 @@ Strings e funções de nome de arquivo (endereços da versão-alvo):
 
 Chamadores (`FUN_00b19fb0`, `FUN_00b1a810`, `FUN_00b1bba0`, `FUN_00b21e70`, `FUN_00b38ac0`, `FUN_00b2bcd0`, `FUN_00b379b0`) são telas de salvar e carregar (cursor, estado de tela), sem laço de XOR. A decifração está mais fundo na cadeia.
 
+## Execução (tentativas 7–10, 2026-10-27, testes automáticos sem o Bruno)
+
+| Tentativa | Resultado |
+|---|---|
+| 7. Sonda de memória (DLL `mem_probe`): procura um trecho do option file decifrado na memória e grava uma cópia | Achou só os **dados padrão** embutidos no jogo: o jogo ainda não tinha lido o arquivo |
+| 8. Rastreio de `CreateFile`/`ReadFile` | Nada em 30 s: **CONFIRMADO** que o jogo só carrega o option file **depois do "PRESS START"** |
+| 9. Injeção de teclas por roteiro (`pes6online_inject.txt`, Enter aos 6 s) | **CONFIRMADO:** passou da tela inicial; o jogo abriu `…/save/folder1/KONAMI-WIN32PES6OPT` 2 vezes e leu 1.191.936 bytes de uma vez (buffers `0x2EE2A020`, `0x2EE25020`) |
+| 10. Cópias decifradas na memória (2, iguais entre si em 99,8%) × arquivo | Chave efetiva (cifrado XOR decifrado) periódica a cada 256 bytes em **99,8%** nos bytes 2 e 3 de cada palavra, **89%** no byte 1 e **1,4%** no byte 0. Nem XOR nem soma de 32 bits fecham |
+
+**Pilha da abertura:** `0x044744BC` (CRT) < **`0x005FECE9`** (jogo) < `0x0448EF36` < `0x0041C12A`.
+**Pilha da leitura:** `0x04474DB3` < `0x00423EC1` (CRT `fread`) < `0x0447DE54` < `0x04491F30` < `0x0448D380`.
+Os quadros em `0x044…` ficam na seção extra `.rld` (código reorganizado). Criar funções nesses endereços de retorno gera fragmentos: falta localizar o início real das funções.
+
+**INFERIDO:** os bytes 2–3 usam XOR com chave de 256 bytes; os bytes 0–1 têm um componente que depende de algo além da posição (encadeamento ou contador). A regra exata ainda não é conhecida.
+
+**Consequência prática:** para ler o estado (times, competição), dá para usar a **cópia já decifrada na memória** pela DLL, sem implementar a cifra. Para gravar um save, a alternativa é chamar a rotina de salvar do próprio jogo.
+
 ## Próximos caminhos (para retomar)
 
 1. **Dinâmico (melhor):** com a DLL, observar `ReadFile` do `KONAMI-WIN32PES6OPT` e o buffer logo depois. A memória já decifrada dá o texto puro, e comparar com o arquivo dá a chave completa, sem adivinhar. Teste automático possível (abrir o jogo, ler log, fechar).
