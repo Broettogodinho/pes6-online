@@ -85,8 +85,12 @@ O que cada id significa (menu principal, Copa, Liga, opções…) depende do tes
 | 5, 9, 10 | EDIT, NETWORK, EXIT | não tratados aqui (outro caminho) | — |
 
 - Se `DAT_03be6324 == 1`, o subestado vai sempre para 4 (INFERIDO: modo especial, talvez demonstração ou rede).
-- **`DAT_03be12c9` = modo de jogo**, agora com valores: 0 partida, 1 liga, 2 copa, 4 Master League, 5 treino, 6 opções, 7 partida (variante), 0xE International Challenge. INFERIDO pelo código.
-- **Conflito a resolver:** a Tentativa 2 viu `modo=0x00` o tempo todo, inclusive entrando em Copa. Hipóteses: a leitura da sonda (tamanho/endereço) estava errada, ou o valor volta a 0 antes da amostra de 100 ms. Próximo teste automático: roteiro até CUP (cursor 3 + Enter) com `mem_diff` e a sonda de estado ligadas.
+- **`DAT_03be12c9` = modo de jogo**, agora com valores: 0 partida, 1 liga, 2 copa (CONFIRMADO), 4 Master League, 5 treino, 6 opções, 7 partida (variante), 0xE International Challenge. INFERIDO pelo código.
+- **Teste automático (2026-10-27, DLL v0.11.0): CUP → modo 2 CONFIRMADO.**
+  - Roteiro: Enter, Enter (título), ↓↓↓ até CUP, Enter → tela **MODE SELECT** (New Game / Load Data, cursor em Load Data), ↑, Enter em New Game.
+  - A sonda de estado registrou `modo=0x02` cerca de 52 s após o início, logo depois do Enter em New Game; na tela MODE SELECT o modo ainda era 0.
+  - Bytes conferidos no executável: `FUN_009d72d0` grava o byte `0x03BE12C9` (`mov byte [0x03BE12C9], imm8` em `0x9D72FB`…`0x9D7338`).
+  - **Conclusão:** o modo é gravado só ao confirmar o submenu (New Game), não ao escolher o item no menu principal. Isso explica a Tentativa 2 se a navegação daquela sessão voltou antes da confirmação (INFERIDO).
 
 ## Consequências para o mod (SCRUM-58/59)
 
